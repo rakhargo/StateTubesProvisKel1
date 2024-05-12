@@ -1,0 +1,49 @@
+Catatan semua param ada tokennya yang diperoleh saat daftar atau login
+
+
+get_semua_item_keranjang
+result
+[
+    {id_keranjang:"",
+     id_makanan:"",
+     nama_makanan:"",
+     foto_makanan:"",
+     jumlah:""},
+]
+
+tambah_item_keranjang
+   param: id_makanan, kuantitas 
+result
+[]
+
+hapus_item_keranjang
+   param: id_makanan, kuantitas
+Catatan: user melakukan pengurangan item, atau penghapusan sekaligus item
+Jadi ini seperti update, kalau kuantitas 0, artinya item dihapus, mungkin PUT?
+
+get_status
+catatan: kemungkinan status adalah pesanan_diterima, pesanan_ditolak,  pesanan_dimasak, pesanan_dibatalkan (misal makanan habis),
+ pesanan_diantar (ada atribut kilometer), pesanan_sampai
+
+
+Rancangan UX:
+Tampilan depan
+Daftar atau login  (cukup sekali saja)
+
+Daftar makanan, user bisa scroll ke bawah, 
+    user bisa melihat detil makanan, tambah ke keranjang 
+
+User checkout --> bayar (asumsikan menggunakan seperti gopay)
+User melihat status order dengan menekan tombol "cek status"  (karena belum push notif)
+State setiap status order:
+   - pesanan diterima, pesanan diantar --> tidak bisa melakukan order baru
+   - pesanan ditolak, dibatalkan, sampai --> bisa melakukan pemesanan baru
+
+
+   
+
+
+
+
+
+
