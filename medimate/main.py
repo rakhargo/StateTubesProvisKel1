@@ -29,8 +29,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 
 
-app = FastAPI(title="Web service BarayaFood",
-    description="Web service untuk quiz provis Mei 2024",
+app = FastAPI(title="Web service Medimate",
+    description="Web service untuk tubes provis Mei 2024 makasih banyak pa yudi",
     version="0.0.1",)
 
 app.add_middleware(

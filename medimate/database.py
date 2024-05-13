@@ -6,7 +6,7 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./barayafood.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:///./medimate.db"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
