@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 
-
+ 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./medimate.db"
 
 engine = create_engine(

@@ -45,7 +45,7 @@ class Profile(ProfileBase):
     class Config:
         orm_mode = True
 
-    @field_validator("tanggalLahir", pre=True)
+    @field_validator("tanggalLahir")
     def parse_tanggal_lahir(cls, value):
         if isinstance(value, str):
             return date.fromisoformat(value)
@@ -88,7 +88,7 @@ class Appointment(AppointmentBase):
     class Config:
         orm_mode = True
 
-    @field_validator("waktu", pre=True)
+    @field_validator("waktu")
     def parse_waktu(cls, value):
         if isinstance(value, str):
             return datetime.fromisoformat(value)
@@ -150,7 +150,7 @@ class MedicalRecord(MedicalRecordBase):
     class Config:
         orm_mode = True
 
-    @field_validator("dateTime", pre=True)
+    @field_validator("dateTime")
     def parse_dateTime(cls, value):
         if isinstance(value, str):
             return datetime.fromisoformat(value)
@@ -193,7 +193,7 @@ class Review(ReviewBase):
     class Config:
         orm_mode = True
 
-    @field_validator("tanggal", pre=True)
+    @field_validator("tanggal")
     def parse_tanggal(cls, value):
         if isinstance(value, str):
             return date.fromisoformat(value)
@@ -219,7 +219,7 @@ class Service(BaseModel):
 class SpecialistAndPolyclinic(BaseModel):
     id: int
     icon: str
-    nama: str
+    name: str
 
     class Config:
         orm_mode = True

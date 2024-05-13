@@ -126,4 +126,4 @@ class SpecialistAndPolyclinic(BaseDB):
     __tablename__ = "specialistAndPolyclinic"
     id = Column(Integer, primary_key=True)
     icon = Column(String)
-    nama = Column(String, nullable=False)
+    name = Column(String, nullable=False)
