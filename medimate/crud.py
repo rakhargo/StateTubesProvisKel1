@@ -6,7 +6,8 @@ from sqlalchemy import desc
 # replaced
 SALT = b'$2b$12$UoS.62CnRhwU6YGBLYx.6.'
 
-######### user
+#######################################################################################################
+# User
 
 def create_user(db: Session, user: schemas.UserCreate):
     hashed_password = hashPassword(user.password)
@@ -38,109 +39,190 @@ def hashPassword(passwd: str):
     pwd_hash = bcrypt.hashpw(bytePwd, SALT)
     return pwd_hash
 
+#######################################################################################################
+# profile
 
-
-
-
-
-
-
-
-
-############  untuk cart ============================ GANTI INI WOY
-def create_cart(db: Session, cart: schemas.Cart):
-    db_cart = models.Cart(user_id = cart.user_id, item_id = cart.item_id, quantity = cart.quantity )
-    db.add(db_cart)
+# Create Profile
+def create_profile(db: Session, profile: schemas.ProfileCreate):
+    db_profile = models.Profile(**profile.model_dump())
+    db.add(db_profile)
     db.commit()
-    db.refresh(db_cart)
-    return db_cart
+    db.refresh(db_profile)
+    return db_profile
 
-def delete_cart_by_id(db: Session, id_cart:int):
-    hasil = db.query(models.Cart).filter(models.Cart.id == id_cart).delete()
+# Get Profile by profile id
+def get_profile(db: Session, profile_id: int):
+    return db.query(models.Profile).filter(models.Profile.id == profile_id).first()
+
+# Get Profile by User ID
+def get_profile_by_user_id(db: Session, user_id: int):
+    return db.query(models.Profile).filter(models.Profile.userId == user_id).first()
+
+# Update Profile
+def update_profile(db: Session, profile_id: int, profile: schemas.ProfileUpdate):
+    db_profile = db.query(models.Profile).filter(models.Profile.id == profile_id).first()
+    if db_profile:
+        for key, value in profile.model_dump(exclude_unset=True).items():
+            setattr(db_profile, key, value)
+        db.commit()
+        db.refresh(db_profile)
+    return db_profile
+
+# Delete Profile
+def delete_profile(db: Session, profile_id: int):
+    db.query(models.Profile).filter(models.Profile.id == profile_id).delete()
     db.commit()
-    return {"record_dihapus":hasil} 
+    return {"message": "Profile deleted successfully"}
 
-# ada hapus semua cart berdasarkan user
-# asumsikan kalau sudah selesai (sudah sampai ke user), isi cart dikosongkan
-def delete_cart_by_userid(db: Session, user_id:int):
-    hasil = db.query(models.Cart).filter(models.Cart.user_id == user_id).delete()
+#######################################################################################################
+# Doctor
+
+# Get Doctor by ID
+def get_doctor_id(db: Session, doctor_id: int):
+    return db.query(models.Doctor).filter(models.Doctor.id == doctor_id).first()
+
+# Get all doctors
+def get_all_doctors(db: Session):
+    return db.query(models.Doctor).all()
+
+#######################################################################################################
+# Appointments
+
+# Create Appointment
+def create_appointment(db: Session, appointment: schemas.AppointmentCreate):
+    db_appointment = models.Appointment(**appointment.model_dump())
+    db.add(db_appointment)
     db.commit()
-    return {"record_dihapus":hasil} 
+    db.refresh(db_appointment)
+    return db_appointment
 
-# semua belanja semua user, untuk debug, jangan digunakan
-# def get_carts(db: Session, skip: int = 0, limit: int = 100):
-#     return db.query(models.Cart).offset(skip).limit(limit).all()
+# Get Appointment
+def get_appointment(db: Session, appointment_id: int):
+    return db.query(models.Appointment).filter(models.Appointment.id == appointment_id).first()
 
-def get_carts_by_userid(db: Session, user_id:int, skip: int = 0, limit: int = 100 ):
-    return db.query(models.Cart).filter(models.Cart.user_id == user_id).offset(skip).limit(limit).all()
+# Get Appointments by Profile ID
+def get_appointments_by_profile_id(db: Session, profile_id: int):
+    return db.query(models.Appointment).filter(models.Appointment.patientId == profile_id).all()
 
-# true kalau keranjang kosong
-def get_is_carts_empty_userid(db: Session, user_id:int):
-    exists = db.query(models.Cart.id).filter(models.Cart.user_id == user_id).exists()
-    if db.query(exists).scalar():
-        return False
-    else:
-        return True
+# Update Appointment
+def update_appointment(db: Session, appointment_id: int, appointment: schemas.AppointmentUpdate):
+    db_appointment = db.query(models.Appointment).filter(models.Appointment.id == appointment_id).first()
+    if db_appointment:
+        for key, value in appointment.model_dump(exclude_unset=True).items():
+            setattr(db_appointment, key, value)
+        db.commit()
+        db.refresh(db_appointment)
+    return db_appointment
 
-# ============
-# status dan pembayaran
-
-def pembayaran (db: Session, user_id:int):
-    status = get_last_status(db,user_id=user_id)
-    # hanya proses yang statusnya belum_bayar, selain itu abaikan 
-    temp = status["status"]
-    if temp.status=="belum_bayar":
-        insert_status(db=db,user_id=user_id,status="sudah_bayar")
-        return {"status":"status diupdate sudah bayar"}
-    else:
-        return {"status":"tidak diproses, cek status"}
-
-def insert_status(db:Session, user_id:int, status: str):
-    db_status = models.Status(user_id = user_id, status = status )
-    db.add(db_status)
+# Delete Appointment
+def delete_appointment(db: Session, appointment_id: int):
+    db.query(models.Appointment).filter(models.Appointment.id == appointment_id).delete()
     db.commit()
-    db.refresh(db_status)
-    return db_status
+    return {"message": "Appointment deleted successfully"}
 
-#   keranjang_kosong, belum_bayar, bayar, (pesanan_diterima atau pesanan_batal), pesanan_diproses, pesanaan_diantar, 
-def get_last_status(db: Session,user_id:int):
-    last_status = db.query(models.Status).filter(models.Status.user_id == user_id).order_by(desc(models.Status.timestamp)).first()
-    if last_status:
-        return {"status":last_status}
-    else:
-        #tidak ada status, cek cart
-        if get_is_carts_empty_userid(db,user_id=user_id):
-            #kosong, update status
-            insert_status(db,user_id=user_id,status="keranjang_kosong")
-            return get_last_status(db,user_id=user_id)
+# Get all Appointments
+def get_all_appointments(db: Session):
+    return db.query(models.Appointment).all()
 
-##==================== item
+#######################################################################################################
+# Articles
 
-# ambil semua item
-def get_items(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Item).offset(skip).limit(limit).all()
+# Get Health Article by ID
+def get_health_article(db: Session, article_id: int):
+    return db.query(models.HealthArticle).filter(models.HealthArticle.id == article_id).first()
 
-# ambil item dengan id tertentu
-def get_item_by_id(db: Session, item_id: int):
-    return db.query(models.Item).filter(models.Item.id == item_id).first()
+# Get all Health Articles
+def get_all_health_articles(db: Session):
+    return db.query(models.HealthArticle).all()
 
+#######################################################################################################
+# health facility
 
-# ambil item yang cocok dengan keyword di deskripsi
-def get_item_by_keyword(db: Session, keyword: str):
-    #Artikel.Benennung.like("%"+prop+"%")
-    return db.query(models.Item).filter(models.Item.description.ilike("%"+keyword+"%")).all()
-    #return db.query(models.Item).filter(models.Item.like("%"+keyword+"%")).first()
+# Get Health Facility by ID
+def get_health_facility_by_id(db: Session, facility_id: int):
+    return db.query(models.HealthFacility).filter(models.HealthFacility.id == facility_id).first()
 
-# tambah item
-def create_item(db: Session, item: schemas.ItemBase):
-    db_item = models.Item(title=item.title, description = item.description, price = item.price, img_name = item.img_name )
-    db.add(db_item)
+# Get all Health Facilities
+def get_all_health_facilities(db: Session):
+    return db.query(models.HealthFacility).all()
+
+#######################################################################################################
+# medical records
+
+# Get Medical Records by Profile ID
+def get_medical_records_by_profile_id(db: Session, profile_id: int):
+    return db.query(models.MedicalRecord).filter(models.MedicalRecord.patientId == profile_id).all()
+
+# Get Medical Record by ID
+def get_medical_record(db: Session, record_id: int):
+    return db.query(models.MedicalRecord).filter(models.MedicalRecord.id == record_id).first()
+
+# Update Medical Record
+def update_medical_record(db: Session, record_id: int, record: schemas.MedicalRecordUpdate):
+    db_record = db.query(models.MedicalRecord).filter(models.MedicalRecord.id == record_id).first()
+    if db_record:
+        for key, value in record.model_view(exclude_unset=True).items():
+            setattr(db_record, key, value)
+        db.commit()
+        db.refresh(db_record)
+    return db_record
+
+#######################################################################################################
+# medical records
+
+# Get Referral by ID
+def get_referral(db: Session, referral_id: int):
+    return db.query(models.Referral).filter(models.Referral.id == referral_id).first()
+
+# Get all Referrals
+def get_all_referrals(db: Session):
+    return db.query(models.Referral).all()
+
+#######################################################################################################
+# review
+
+# Create Review
+def create_review(db: Session, review: schemas.ReviewCreate):
+    db_review = models.Review(**review.model_view())
+    db.add(db_review)
     db.commit()
-    db.refresh(db_item)
-    return db_item
+    db.refresh(db_review)
+    return db_review
 
-# delete semua item
-def delete_all_item(db: Session):
-    jum_rec = db.query(models.Item).delete()
-    db.commit()
-    return jum_rec
+# Get Review by ID
+def get_review(db: Session, review_id: int):
+    return db.query(models.Review).filter(models.Review.id == review_id).first()
+
+# Get all Reviews
+def get_all_reviews(db: Session):
+    return db.query(models.Review).all()
+
+# Get Reviews by Doctor ID
+def get_reviews_by_doctor_id(db: Session, doctor_id: int):
+    return db.query(models.Review).filter(models.Review.revieweeDoctorId == doctor_id).all()
+
+# Get Reviews by Facility (Faskes) ID
+def get_reviews_by_facility_id(db: Session, facility_id: int):
+    return db.query(models.Review).filter(models.Review.revieweeFaskesId == facility_id).all()
+
+#######################################################################################################
+# service
+
+# Get all services
+def get_all_services(db: Session):
+    return db.query(models.Service).all()
+
+# Get Service by ID
+def get_service_by_id(db: Session, service_id: int):
+    return db.query(models.Service).filter(models.Service.id == service_id).first()
+
+#######################################################################################################
+# polyclinic
+
+# Get all polyclinic
+def get_all_specialist_and_polyclinics(db: Session):
+    return db.query(models.SpecialistAndPolyclinic).all()
+
+# Get Polyclinic by ID
+def get_polyclinic_by_id(db: Session, polyclinic_id: int):
+    return db.query(models.SpecialistAndPolyclinic).filter(models.SpecialistAndPolyclinic.id == polyclinic_id).first()
