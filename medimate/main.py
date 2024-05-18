@@ -2,7 +2,6 @@
 
 # test lokal uvicorn main:app --host 0.0.0.0 --port 8000 --reload --
 
-
 # kalau deploy di server: pip install gunicorn
 # gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --daemon
 # mematikan gunicorn (saat mau update):
@@ -153,129 +152,184 @@ async def token(req: Request, form_data: OAuth2PasswordRequestForm = Depends(),d
 
     return {"access_token": access_token, "token_type": "bearer"}
 
-
-# # tambah item ke keranjang
-# # response ada id (cart), sedangkan untuk paramater input  tidak ada id (cartbase)
-# @app.post("/carts/"  ) # response_model=schemas.Cart 
-# def create_item_user_cart(
-#     cart: schemas.CartBase, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
-#     usr =  verify_token(token) #bisa digunakan untuk mengecek apakah user cocok (tdk boleh akses data user lain)
-#     return crud.create_cart(db=db, cart=cart)
-
-# # untuk semua isi cart, hanya untuk debug
-# # @app.get("/carts/", response_model=list[schemas.Cart])
-# # def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
-# #     usr =  verify_token(token) #bisa digunakan untuk mengecek apakah user cocok (tdk boleh akses data user lain)
-# #     carts = crud.get_carts(db, skip=skip, limit=limit)
-# #     return carts
-
-# #ambil isi cart milik seorang user
-# @app.get("/carts/{user_id}", response_model=list[schemas.Cart])
-# def read_users(user_id:int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
-#     usr =  verify_token(token) #bisa digunakan untuk mengecek apakah user cocok (tdk boleh akses data user lain)
-#     carts = crud.get_carts_by_userid(db, user_id=user_id,skip=skip, limit=limit)
-#     return carts
-
-# # hapus item cart berdasarkan cart id
-# @app.delete("/carts/{cart_id}")
-# def delete_item_user_cart(cart_id:int,db: Session = Depends(get_db),token: str = Depends(oauth2_scheme) ):
-#     usr =  verify_token(token) #bisa digunakan untuk mengecek apakah user cocok (tdk boleh akses data user lain)
-#     return crud.delete_cart_by_id(db,cart_id)
-
-
-# # hapus item cart berdasarkan user id
-# @app.delete("/clear_whole_carts_by_userid/{user_id}")
-# def delete_item_user_cart(user_id:int,db: Session = Depends(get_db),token: str = Depends(oauth2_scheme) ):
-#     usr =  verify_token(token) #bisa digunakan untuk mengecek apakah user cocok (tdk boleh akses data user lain)
-#     return crud.delete_cart_by_userid(db,user_id=user_id)
-
-
-# #### ITEMS
-
-# # semua item
-# @app.get("/items/", response_model=list[schemas.Item])
-# def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
-#     usr =  verify_token(token)
-#     items = crud.get_items(db, skip=skip, limit=limit)
-#     return items
-
-# # image item berdasarkan id
-# path_img = "../img/"
-# @app.get("/items_image/{item_id}")
-# def read_image(item_id:int,  db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
-#     usr =  verify_token(token)
-#     item = crud.get_item_by_id(db,item_id)
-#     if not(item):
-#         raise HTTPException(status_code=404, detail="id tidak valid")
-#     nama_image =  item.img_name # "bakso.png" #dummy
-#     if not(path.exists(path_img+nama_image)):
-#         raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
-    
-#     fr =  FileResponse(path_img+nama_image)
-#     return fr   
-
-# # cari item berdasarkan deskripsi
-# @app.get("/search_items/{keyword}")
-# def cari_item(keyword:str,  db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
-#     usr =  verify_token(token)
-
-#     return crud.get_item_by_keyword(db,keyword)
-
-# ###################  status
-
-# #status diset manual dulu karena cukup rumit kalau ditangani constraitnya
-
-# #keranjang terisi --> user checkout dan siap bayar
-# @app.post("/set_status_harap_bayar/{user_id}")
-# def set_status_harap_bayar(user_id:int,  db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
-#     return crud.insert_status(db=db,user_id=user_id,status="belum_bayar")
-
-# #user membayar
-# @app.post("/pembayaran/{user_id}")
-# def bayar(user_id:int,  db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
-#     return crud.pembayaran(db=db,user_id=user_id)
-
-# #user sudah bayar --> penjual menerima 
-# @app.post("/set_status_penjual_terima/{user_id}")
-# def set_status_penjual_terima(user_id:int,  db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
-#     return crud.insert_status(db=db,user_id=user_id,status="pesanan_diterima")
-
-# # user sudah bayar --> penjual menolak
-# # isi keranjang dikosongkan
-# @app.post("/set_status_penjual_tolak/{user_id}")
-# def set_status_penjual_terima(user_id:int,  db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
-#     # isi cart dikosongkan
-#     crud.delete_cart_by_userid(db,user_id=user_id)
-#     return crud.insert_status(db=db,user_id=user_id,status="pesanan_ditolak")
-
-# # penjual menerima --> pesanan diantar
-# @app.post("/set_status_diantar/{user_id}")
-# def set_status_penjual_terima(user_id:int,  db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
-#     return crud.insert_status(db=db,user_id=user_id,status="pesanaan_diantar")
-
-# # pesanan diantar -->pesanan diterima
-# @app.post("/set_status_diterima/{user_id}")
-# def set_status_penjual_terima(user_id:int,  db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
-#     #cart dikosongkan
-#     #idealnya isi cart dipindahkan ke transaksi untuk arsip transaksi
-#     crud.delete_cart_by_userid(db,user_id=user_id)
-#     return crud.insert_status(db=db,user_id=user_id,status="pesanan_selesai")
-
-# @app.get("/get_status/{user_id}")
-# def last_status(user_id:int,  db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
-#     usr =  verify_token(token) #bisa digunakan untuk mengecek apakah user cocok (tdk boleh akses data user lain)
-#     return crud.get_last_status(db,user_id)
-
-
-# punya medimate
 ####################################################################################################
+# punya medimate
+
+###################  profile
+
+# create profile
+@app.post("/create_profile/{user_id}")
+def create_profile(user_id: int, profile: schemas.ProfileCreate, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    if usr["user_id"] != user_id:
+        raise HTTPException(status_code=401, detail="Unauthorized access to create profile")
+
+    return crud.create_profile(db=db, profile=profile)
+
+# profile by user id
+@app.get("/profile_user_id/{user_id}", response_model=list[schemas.profile])
+def read_profile(user_id : int, db: Session = Depends(get_db), token : str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+    return crud.get_profile_by_user_id(db, user_id)
+
+# profile by profile id
+@app.get("/profile/{profile_id}", response_model=schemas.profile)
+def read_profile(profile_id : int, db: Session = Depends(get_db), token : str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+    return crud.get_profile(db, profile_id)
+
+# profile picture
+path_img = '../img/profile_picture'
+@app.get("/profile_picture/{profile_id}")
+def read_image(profile_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
+    usr =  verify_token(token)
+    profile = crud.get_profile(db,profile_id)
+    if not(profile):
+        raise HTTPException(status_code=404, detail="id tidak valid")
+    nama_image = profile.profilePhoto
+    if not(path.exists(path_img + nama_image)):
+        raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
+    
+    return FileResponse(path_img+nama_image)
+
+# delete profile by profile id
+@app.delete("/delete_profile/{profile_id}")
+def delete_profile(profile_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    # Panggil fungsi untuk menghapus profil berdasarkan profile_id
+    deleted_profile = delete_profile(db, profile_id)
+    if not deleted_profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    return {"message": "Profile deleted successfully"}
+
+###################  doctor
+
+# Get all doctor
+@app.get("/doctor/", response_model=list[schemas.Doctor])
+def read_all_doctor(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    doctor = crud.get_all_doctor(db)
+    return doctor
+
+# Get Doctor by ID
+@app.get("/doctor/{doctor_id}", response_model = schemas.Doctor)
+def read_doctor(doctor_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    doctor = crud.get_doctor_id(db, doctor_id)
+    return doctor
+
+# dooctor picture
+path_img = '../img/doctor_picture'
+@app.get("/doctor_picture/{doctor_id}")
+def read_image(doctor_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
+    usr =  verify_token(token)
+    doctor = crud.get_doctor_id(db,doctor_id)
+    if not(doctor):
+        raise HTTPException(status_code=404, detail="id tidak valid")
+    nama_image = doctor.foto
+    if not(path.exists(path_img + nama_image)):
+        raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
+    
+    return FileResponse(path_img+nama_image)
+
+###################  appointments ############# BELUM WOY
+
+###################  articles
+
+# get all health articles
+@app.get("/health_article/", response_model=list[schemas.HealthArticle])
+def read_health_article(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    article = crud.get_all_health_articles(db)
+    return article
+
+# Get Health Article by ID
+@app.get("/health_article_id/{article_id}", response_model=schemas.HealthArticle)
+def read_health_article(article_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    article = crud.get_health_article(db, article_id)
+    return article
+
+# article picture
+path_img = '../img/article_picture'
+@app.get("/article_picture/{article_id}")
+def read_image(article_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
+    usr =  verify_token(token)
+    article = crud.get_health_article(db,article_id)
+    if not(article):
+        raise HTTPException(status_code=404, detail="id tidak valid")
+    nama_image = article.coverImage
+    if not(path.exists(path_img + nama_image)):
+        raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
+    
+    return FileResponse(path_img+nama_image)
+
+###################  Health Facility
 
 # semua facility
-# @app.get("/health_facility/", response_model=list[schemas.HealthFacility])
-# def read_health_facility(): # db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)
-#     # usr =  verify_token(token)
-#     healthFacility = crud.get_all_health_facilities(db)
-#     return healthFacility
+@app.get("/health_facility/", response_model=list[schemas.HealthFacility])
+def read_health_facility(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr =  verify_token(token)
+    healthFacility = crud.get_all_health_facilities(db)
+    return healthFacility
+
+# Get Health Facility by ID
+@app.get("/health_facility_id/{facility_id}", response_model = schemas.HealthFacility)
+def read_health_facility(facility_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    facility = crud.get_health_facility_by_id(db, facility_id)
+    return facility
+
+# health facility picture
+path_img = '../img/health_facility_picture'
+@app.get("/health_facility_picture/{health_facility_id}")
+def read_image(health_facility_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
+    usr =  verify_token(token)
+    health_facility = crud.get_health_facility_by_id(db,health_facility_id)
+    if not(health_facility):
+        raise HTTPException(status_code=404, detail="id tidak valid")
+    nama_image = health_facility.fotoFaskes
+    if not(path.exists(path_img + nama_image)):
+        raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
+    
+    return FileResponse(path_img+nama_image)
+
+###################  refferals ############# BELUM WOY
+
+###################  review ############# BELUM WOY
+
+###################  service #############
+
+# semua service
+@app.get("/services/", response_model=list[schemas.Service])
+def read_specialist_and_polyclinic(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)): # db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)
+    usr =  verify_token(token)
+    service = crud.get_all_services(db)
+    return service
+
+# image service by id
+path_img = "../img/service_icon/"
+@app.get("/service_images/{service_id}")
+def read_image(service_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
+    usr =  verify_token(token)
+    service = crud.get_service_by_id(db,service_id)
+    if not(service):
+        raise HTTPException(status_code=404, detail="id tidak valid")
+    nama_image = service.icon
+    if not(path.exists(path_img + nama_image)):
+        raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
+    
+    return FileResponse(path_img+nama_image)
+
+###################  specialist and polyclinic
 
 # semua specialist and polyclinic
 @app.get("/specialist_and_polyclinic/", response_model=list[schemas.SpecialistAndPolyclinic])
@@ -297,6 +351,6 @@ def read_image(specialist_and_polyclinic_id:int, db: Session = Depends(get_db),t
         raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
     
     fr =  FileResponse(path_img+nama_image)
-    return fr   
+    return fr
 
 ####################################################################################################

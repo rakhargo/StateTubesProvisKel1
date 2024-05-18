@@ -33,7 +33,7 @@ def delete_all_user(db: Session):
     db.commit()
     return jum_rec
 
-# 
+# hash password
 def hashPassword(passwd: str):
     bytePwd = passwd.encode('utf-8')
     pwd_hash = bcrypt.hashpw(bytePwd, SALT)
@@ -168,7 +168,7 @@ def update_medical_record(db: Session, record_id: int, record: schemas.MedicalRe
     return db_record
 
 #######################################################################################################
-# medical records
+# refferals
 
 # Get Referral by ID
 def get_referral(db: Session, referral_id: int):
@@ -210,11 +210,11 @@ def get_reviews_by_facility_id(db: Session, facility_id: int):
 
 # Get all services
 def get_all_services(db: Session):
-    return db.query(models.Service).all()
+    return db.query(models.Services).all()
 
 # Get Service by ID
 def get_service_by_id(db: Session, service_id: int):
-    return db.query(models.Service).filter(models.Service.id == service_id).first()
+    return db.query(models.Services).filter(models.Services.id == service_id).first()
 
 #######################################################################################################
 # polyclinic
