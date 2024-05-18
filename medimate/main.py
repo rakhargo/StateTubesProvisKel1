@@ -279,15 +279,16 @@ async def token(req: Request, form_data: OAuth2PasswordRequestForm = Depends(),d
 
 # semua specialist and polyclinic
 @app.get("/specialist_and_polyclinic/", response_model=list[schemas.SpecialistAndPolyclinic])
-def read_specialist_and_polyclinic(db: Session = Depends(get_db)): # db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)
-    # usr =  verify_token(token)
+def read_specialist_and_polyclinic(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)): # db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)
+    usr =  verify_token(token)
     specialist_and_polyclinic = crud.get_all_specialist_and_polyclinics(db)
     return specialist_and_polyclinic
 
 # image specialist and polyclinic berdasarkan id
 path_img = "../img/specialist_and_polyclinic/"
 @app.get("/specialist_and_polyclinic_images/{specialist_and_polyclinic_id}")
-def read_image(specialist_and_polyclinic_id:int,  db: Session = Depends(get_db)):
+def read_image(specialist_and_polyclinic_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
+    usr =  verify_token(token)
     specialist_and_polyclinic = crud.get_polyclinic_by_id(db,specialist_and_polyclinic_id)
     if not(specialist_and_polyclinic):
         raise HTTPException(status_code=404, detail="id tidak valid")

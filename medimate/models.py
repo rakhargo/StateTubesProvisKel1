@@ -6,8 +6,8 @@ from sqlalchemy.ext.hybrid import hybrid_property
 class User(BaseDB):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
+    username = Column(String, unique = True, index = True)
     hashed_password = Column(String)
-    email = Column(String, unique = True, index = True)
 
 class Profile(BaseDB):
     __tablename__ = "profile"
