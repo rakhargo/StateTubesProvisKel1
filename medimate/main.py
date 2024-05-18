@@ -168,13 +168,13 @@ def create_profile(user_id: int, profile: schemas.ProfileCreate, db: Session = D
     return crud.create_profile(db=db, profile=profile)
 
 # profile by user id
-@app.get("/profile_user_id/{user_id}", response_model=list[schemas.profile])
+@app.get("/profile_user_id/{user_id}", response_model=list[schemas.Profile])
 def read_profile(user_id : int, db: Session = Depends(get_db), token : str = Depends(oauth2_scheme)):
     usr = verify_token(token)
     return crud.get_profile_by_user_id(db, user_id)
 
 # profile by profile id
-@app.get("/profile/{profile_id}", response_model=schemas.profile)
+@app.get("/profile/{profile_id}", response_model=schemas.Profile)
 def read_profile(profile_id : int, db: Session = Depends(get_db), token : str = Depends(oauth2_scheme)):
     usr = verify_token(token)
     return crud.get_profile(db, profile_id)
