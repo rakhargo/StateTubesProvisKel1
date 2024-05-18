@@ -1,11 +1,6 @@
 from database import BaseDB
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, Nullable, String, func, Date
-from sqlalchemy.orm import relationship
-from sqlalchemy.orm import Mapped
-from typing import List
-from sqlalchemy import Table
+from sqlalchemy import Column, ForeignKey, Integer, String, Date
 from sqlalchemy import DateTime
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 
 class User(BaseDB):
