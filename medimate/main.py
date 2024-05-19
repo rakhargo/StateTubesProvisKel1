@@ -199,7 +199,7 @@ def delete_profile(profile_id: int, db: Session = Depends(get_db), token: str = 
     usr = verify_token(token)
 
     # Panggil fungsi untuk menghapus profil berdasarkan profile_id
-    deleted_profile = delete_profile(db, profile_id)
+    deleted_profile = crud.delete_profile(db, profile_id)
     if not deleted_profile:
         raise HTTPException(status_code=404, detail="Profile not found")
 
@@ -239,13 +239,29 @@ def read_doctor_image(doctor_id:int, db: Session = Depends(get_db),token: str = 
 
 ###################  appointments ############# BELUM WOY
 
-# create appointment
+# create appointment with profile id
 
 # read appointment by profile id
+@app.get("/appointment/{profile_id}", response_model=list[schemas.Appointment])
+def read_appointment_profile_id(profile_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    appointment = crud.get_appointments_by_profile_id(db, profile_id)
+    return appointment
 
 # update appointment
 
-# delete appointment
+# delete appointment by id
+@app.delete("/delete_appointment/{appointment_id}")
+def delete_appointment(appointment_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    # Panggil fungsi untuk menghapus profil berdasarkan appointment_id
+    deleted_appointment = crud.delete_appointment(db, appointment_id)
+    if not deleted_appointment:
+        raise HTTPException(status_code=404, detail="Appointment not found")
+
+    return {"message": "Appointment deleted successfully"}
 
 ###################  articles
 
@@ -314,15 +330,34 @@ def read_health_facility_image(health_facility_id:int, db: Session = Depends(get
 
 # create refferals
 
-# read refferals
+# read refferals by id
+@app.get("/refferal/{refferal_id}", response_model=list[schemas.RefferalRead])
+def read_refferal_by_id(refferal_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    refferal = crud.get_refferal(db, refferal_id)
+    return refferal
 
 ###################  review ############# BELUM WOY
 
 # create review
 
+
 # read review by doctor id
+@app.get("/review_doctor/{doctor_id}", response_model=list[schemas.Review])
+def read_review_doctor(doctor_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    review_doc = crud.get_reviews_by_doctor_id(db, doctor_id)
+    return review_doc
 
 # read review by facility id
+@app.get("/review_facility/{facility_id}", response_model=list[schemas.Review])
+def read_review_facility(facility_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    review_fac = crud.get_reviews_by_facility_id(db, facility_id)
+    return review_fac
 
 ###################  service #############
 
