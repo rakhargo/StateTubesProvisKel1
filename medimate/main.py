@@ -104,7 +104,7 @@ SECRET_KEY = "ilkom_upi_top"
 
 def create_access_token(username):
     # info yang penting adalah berapa lama waktu expire
-    expiration_time = datetime.datetime.utcnow() + datetime.timedelta(hours=24)    # .now(datetime.UTC)
+    expiration_time = datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=24)    # .now(datetime.UTC)
     access_token = jwt.encode({"username":username,"exp":expiration_time},SECRET_KEY,algorithm="HS256")
     return access_token    
 
@@ -169,7 +169,7 @@ def create_profile(user_id: int, profile: schemas.ProfileCreate, db: Session = D
 
 # profile by user id
 @app.get("/profile_user_id/{user_id}", response_model=list[schemas.Profile])
-def read_profile(user_id : int, db: Session = Depends(get_db), token : str = Depends(oauth2_scheme)):
+def read_profile_user_id(user_id : int, db: Session = Depends(get_db), token : str = Depends(oauth2_scheme)):
     usr = verify_token(token)
     return crud.get_profile_by_user_id(db, user_id)
 
@@ -182,7 +182,7 @@ def read_profile(profile_id : int, db: Session = Depends(get_db), token : str = 
 # profile picture
 path_img = '../img/profile_picture'
 @app.get("/profile_picture/{profile_id}")
-def read_image(profile_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
+def read_profile_picture(profile_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     usr =  verify_token(token)
     profile = crud.get_profile(db,profile_id)
     if not(profile):
@@ -226,7 +226,7 @@ def read_doctor(doctor_id: int, db: Session = Depends(get_db), token: str = Depe
 # dooctor picture
 path_img = '../img/doctor_picture'
 @app.get("/doctor_picture/{doctor_id}")
-def read_image(doctor_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
+def read_doctor_image(doctor_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     usr =  verify_token(token)
     doctor = crud.get_doctor_id(db,doctor_id)
     if not(doctor):
@@ -243,7 +243,7 @@ def read_image(doctor_id:int, db: Session = Depends(get_db),token: str = Depends
 
 # get all health articles
 @app.get("/health_article/", response_model=list[schemas.HealthArticle])
-def read_health_article(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+def read_all_health_article(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     usr = verify_token(token)
 
     article = crud.get_all_health_articles(db)
@@ -260,7 +260,7 @@ def read_health_article(article_id: int, db: Session = Depends(get_db), token: s
 # article picture
 path_img = '../img/article_picture'
 @app.get("/article_picture/{article_id}")
-def read_image(article_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
+def read_article_image(article_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     usr =  verify_token(token)
     article = crud.get_health_article(db,article_id)
     if not(article):
@@ -275,7 +275,7 @@ def read_image(article_id:int, db: Session = Depends(get_db),token: str = Depend
 
 # semua facility
 @app.get("/health_facility/", response_model=list[schemas.HealthFacility])
-def read_health_facility(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+def read_all_health_facility(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     usr =  verify_token(token)
     healthFacility = crud.get_all_health_facilities(db)
     return healthFacility
@@ -291,7 +291,7 @@ def read_health_facility(facility_id: int, db: Session = Depends(get_db), token:
 # health facility picture
 path_img = '../img/health_facility_picture'
 @app.get("/health_facility_picture/{health_facility_id}")
-def read_image(health_facility_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
+def read_health_facility_image(health_facility_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     usr =  verify_token(token)
     health_facility = crud.get_health_facility_by_id(db,health_facility_id)
     if not(health_facility):
@@ -310,7 +310,7 @@ def read_image(health_facility_id:int, db: Session = Depends(get_db),token: str 
 
 # semua service
 @app.get("/services/", response_model=list[schemas.Service])
-def read_specialist_and_polyclinic(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)): # db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)
+def read_services(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)): # db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)
     usr =  verify_token(token)
     service = crud.get_all_services(db)
     return service
@@ -318,7 +318,7 @@ def read_specialist_and_polyclinic(db: Session = Depends(get_db), token: str = D
 # image service by id
 path_img = "../img/service_icon/"
 @app.get("/service_images/{service_id}")
-def read_image(service_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
+def read_services_image(service_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     usr =  verify_token(token)
     service = crud.get_service_by_id(db,service_id)
     if not(service):
@@ -341,7 +341,7 @@ def read_specialist_and_polyclinic(db: Session = Depends(get_db), token: str = D
 # image specialist and polyclinic berdasarkan id
 path_img = "../img/specialist_and_polyclinic/"
 @app.get("/specialist_and_polyclinic_images/{specialist_and_polyclinic_id}")
-def read_image(specialist_and_polyclinic_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
+def read_spe_image(specialist_and_polyclinic_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     usr =  verify_token(token)
     specialist_and_polyclinic = crud.get_polyclinic_by_id(db,specialist_and_polyclinic_id)
     if not(specialist_and_polyclinic):
