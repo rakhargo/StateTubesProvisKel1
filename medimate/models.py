@@ -14,9 +14,10 @@ class Profile(BaseDB):
     id = Column(Integer, primary_key=True)
     nama = Column(String, unique=True, index=True)
     tanggalLahir = Column(Date)
-    jenis_kelamin = Column(String, nullable=False)
+    jenisKelamin = Column(String, nullable=False)
     alamat = Column(String, nullable=False)
     noTelepon = Column(String, nullable=False)
+    email = Column(String, nullable=False)
     userPhoto = Column(String)
     userId = Column(Integer, ForeignKey('users.id'), nullable=False)
 
@@ -79,7 +80,7 @@ class MedicalRecord(BaseDB):
 
     @hybrid_property
     def formatted_dateTime(self):
-        return self.dateTime.strftime("%d %m %Y %H:%M:%S")
+        return self.tanggal.strftime("%d %m %Y %H:%M:%S")
 
 class Referral(BaseDB):
     __tablename__ = "referral"

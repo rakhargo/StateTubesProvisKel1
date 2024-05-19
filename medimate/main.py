@@ -239,6 +239,14 @@ def read_doctor_image(doctor_id:int, db: Session = Depends(get_db),token: str = 
 
 ###################  appointments ############# BELUM WOY
 
+# create appointment
+
+# read appointment by profile id
+
+# update appointment
+
+# delete appointment
+
 ###################  articles
 
 # get all health articles
@@ -304,7 +312,17 @@ def read_health_facility_image(health_facility_id:int, db: Session = Depends(get
 
 ###################  refferals ############# BELUM WOY
 
+# create refferals
+
+# read refferals
+
 ###################  review ############# BELUM WOY
+
+# create review
+
+# read review by doctor id
+
+# read review by facility id
 
 ###################  service #############
 
