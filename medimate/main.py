@@ -21,7 +21,7 @@ import crud, models, schemas
 from database import SessionLocal, engine
 models.BaseDB.metadata.create_all(bind=engine)
 
-# from jose import jwt
+from jose import jwt
 import datetime
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -104,7 +104,7 @@ SECRET_KEY = "ilkom_upi_top"
 
 def create_access_token(username):
     # info yang penting adalah berapa lama waktu expire
-    expiration_time = datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=24)    # .now(datetime.UTC)
+    expiration_time = datetime.datetime.utcnow() + datetime.timedelta(hours=24)    # .now(datetime.UTC)
     access_token = jwt.encode({"username":username,"exp":expiration_time},SECRET_KEY,algorithm="HS256")
     return access_token    
 
