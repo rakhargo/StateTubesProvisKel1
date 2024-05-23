@@ -21,7 +21,7 @@ import crud, models, schemas
 from database import SessionLocal, engine
 models.BaseDB.metadata.create_all(bind=engine)
 
-from jose import jwt
+# from jose import jwt
 import datetime
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -331,7 +331,7 @@ def read_health_facility_image(health_facility_id:int, db: Session = Depends(get
 # create refferals
 
 # read refferals by id
-@app.get("/refferal/{refferal_id}", response_model=list[schemas.RefferalRead])
+@app.get("/refferal/{refferal_id}", response_model=list[schemas.ReferralRead])
 def read_refferal_by_id(refferal_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     usr = verify_token(token)
 
