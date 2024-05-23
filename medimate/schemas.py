@@ -27,8 +27,9 @@ class Token(BaseModel):
 class ProfileBase(BaseModel):
     nama: str
     tanggalLahir: date
-    jenis_kelamin: str
+    jenisKelamin: str
     alamat: str
+    email: str
     noTelepon: str
     userPhoto: Optional[str] = None
     userId: int

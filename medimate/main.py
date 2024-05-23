@@ -172,6 +172,9 @@ def create_profile(user_id: int, profile: schemas.ProfileCreate, db: Session = D
 def read_profile_user_id(user_id : int, db: Session = Depends(get_db), token : str = Depends(oauth2_scheme)):
     usr = verify_token(token)
     return crud.get_profile_by_user_id(db, user_id)
+    # usr =  verify_token(token)
+    # specialist_and_polyclinic = crud.get_all_specialist_and_polyclinics(db)
+    # return specialist_and_polyclinic
 
 # profile by profile id
 @app.get("/profile/{profile_id}", response_model=schemas.Profile)
@@ -180,14 +183,14 @@ def read_profile(profile_id : int, db: Session = Depends(get_db), token : str = 
     return crud.get_profile(db, profile_id)
 
 # profile picture
-path_img = '../img/profile_picture'
 @app.get("/profile_picture/{profile_id}")
 def read_profile_picture(profile_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     usr =  verify_token(token)
     profile = crud.get_profile(db,profile_id)
     if not(profile):
         raise HTTPException(status_code=404, detail="id tidak valid")
-    nama_image = profile.profilePhoto
+    path_img = '../img/profile_picture/'
+    nama_image = profile.userPhoto
     if not(path.exists(path_img + nama_image)):
         raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
     
@@ -224,13 +227,13 @@ def read_doctor(doctor_id: int, db: Session = Depends(get_db), token: str = Depe
     return doctor
 
 # dooctor picture
-path_img = '../img/doctor_picture'
 @app.get("/doctor_picture/{doctor_id}")
 def read_doctor_image(doctor_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     usr =  verify_token(token)
     doctor = crud.get_doctor_id(db,doctor_id)
     if not(doctor):
         raise HTTPException(status_code=404, detail="id tidak valid")
+    path_img = '../img/doctor_picture/'
     nama_image = doctor.foto
     if not(path.exists(path_img + nama_image)):
         raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
@@ -282,13 +285,13 @@ def read_health_article(article_id: int, db: Session = Depends(get_db), token: s
     return article
 
 # article picture
-path_img = '../img/article_picture'
 @app.get("/article_picture/{article_id}")
 def read_article_image(article_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     usr =  verify_token(token)
     article = crud.get_health_article(db,article_id)
     if not(article):
         raise HTTPException(status_code=404, detail="id tidak valid")
+    path_img = '../img/article_picture/'
     nama_image = article.coverImage
     if not(path.exists(path_img + nama_image)):
         raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
@@ -313,13 +316,13 @@ def read_health_facility(facility_id: int, db: Session = Depends(get_db), token:
     return facility
 
 # health facility picture
-path_img = '../img/health_facility_picture'
 @app.get("/health_facility_picture/{health_facility_id}")
 def read_health_facility_image(health_facility_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     usr =  verify_token(token)
     health_facility = crud.get_health_facility_by_id(db,health_facility_id)
     if not(health_facility):
         raise HTTPException(status_code=404, detail="id tidak valid")
+    path_img = '../img/health_facility_picture/'
     nama_image = health_facility.fotoFaskes
     if not(path.exists(path_img + nama_image)):
         raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
@@ -369,13 +372,13 @@ def read_services(db: Session = Depends(get_db), token: str = Depends(oauth2_sch
     return service
 
 # image service by id
-path_img = "../img/service_icon/"
 @app.get("/service_images/{service_id}")
 def read_services_image(service_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     usr =  verify_token(token)
     service = crud.get_service_by_id(db,service_id)
     if not(service):
         raise HTTPException(status_code=404, detail="id tidak valid")
+    path_img = "../img/service_icon/"
     nama_image = service.icon
     if not(path.exists(path_img + nama_image)):
         raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
@@ -392,13 +395,13 @@ def read_specialist_and_polyclinic(db: Session = Depends(get_db), token: str = D
     return specialist_and_polyclinic
 
 # image specialist and polyclinic berdasarkan id
-path_img = "../img/specialist_and_polyclinic/"
 @app.get("/specialist_and_polyclinic_images/{specialist_and_polyclinic_id}")
 def read_spe_image(specialist_and_polyclinic_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     usr =  verify_token(token)
     specialist_and_polyclinic = crud.get_polyclinic_by_id(db,specialist_and_polyclinic_id)
     if not(specialist_and_polyclinic):
         raise HTTPException(status_code=404, detail="id tidak valid")
+    path_img = "../img/specialist_and_polyclinic/"
     nama_image =  specialist_and_polyclinic.icon
     if not(path.exists(path_img + nama_image)):
         raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
