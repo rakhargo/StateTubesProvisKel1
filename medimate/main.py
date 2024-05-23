@@ -264,16 +264,24 @@ def create_appointment(appointment: schemas.AppointmentCreate, db: Session = Dep
 
     return crud.create_appointment(db, profile)
 
+# read appointment by appointment id
+@app.get("/appointment/{appointment_id}", response_model=list[schemas.Appointment])
+def read_appointment(appointment_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    appointment = crud.get_appointment(db, appointment_id)
+    return appointment
+
 # read appointment by profile id
-@app.get("/appointment/{profile_id}", response_model=list[schemas.Appointment])
+@app.get("/appointment_profile/{profile_id}", response_model=list[schemas.Appointment])
 def read_appointment_profile_id(profile_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     usr = verify_token(token)
 
-    appointment = crud.get_appointments_by_profile_id(db, profile_id)
-    return appointment
+    appointment_profile = crud.get_appointments_by_profile_id(db, profile_id)
+    return appointment_profile
 
 # update appointment
-@app.put("/appointment/{appointment_id}", response_model=schemas.Appointment)
+@app.put("/appointment_update/{appointment_id}", response_model=schemas.Appointment)
 def update_appointment(appointment_id: int, appointment_update: schemas.AppointmentUpdate, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     usr = verify_token(token)
 
