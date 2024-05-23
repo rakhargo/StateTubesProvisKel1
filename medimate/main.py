@@ -167,6 +167,15 @@ def create_profile(user_id: int, profile: schemas.ProfileCreate, db: Session = D
 
     return crud.create_profile(db=db, profile=profile)
 
+# update profile
+@app.put("/update_profile/{profile_id}", response_model=schemas.Profile)
+def update_profile(profile_id: int, profile_update: schemas.ProfileUpdate, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+    updated_profile = crud.update_profile(db, profile_id, profile_update)
+    if updated_profile is None:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    return updated_profile
+
 # profile by user id
 @app.get("/profile_user_id/{user_id}", response_model=list[schemas.Profile])
 def read_profile_user_id(user_id : int, db: Session = Depends(get_db), token : str = Depends(oauth2_scheme)):
@@ -242,7 +251,18 @@ def read_doctor_image(doctor_id:int, db: Session = Depends(get_db),token: str = 
 
 ###################  appointments ############# BELUM WOY
 
-# create appointment with profile id
+# create appointment
+    # belum pake profile id buat validasi, bisa diinject profile lain
+@app.post("/create_appointment/")
+def create_appointment(appointment: schemas.AppointmentCreate, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)): # profile_id : int
+    
+    ## pake ini buat verify session nya
+    # usr = verify_token(token)
+
+    # if usr["profile_id"] != profile_id:
+    #     raise HTTPException(status_code=401, detail="Unauthorized access to create profile")
+
+    return crud.create_appointment(db, profile)
 
 # read appointment by profile id
 @app.get("/appointment/{profile_id}", response_model=list[schemas.Appointment])
@@ -253,6 +273,14 @@ def read_appointment_profile_id(profile_id: int, db: Session = Depends(get_db), 
     return appointment
 
 # update appointment
+@app.put("/appointment/{appointment_id}", response_model=schemas.Appointment)
+def update_appointment(appointment_id: int, appointment_update: schemas.AppointmentUpdate, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    updated_appointment = crud.update_appointment(db, appointment_id, appointment_update)
+    if updated_appointment is None:
+        raise HTTPException(status_code=404, detail="Appointment not found")
+    return updated_appointment
 
 # delete appointment by id
 @app.delete("/delete_appointment/{appointment_id}")
