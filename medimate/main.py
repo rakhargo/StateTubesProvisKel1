@@ -262,7 +262,7 @@ def create_appointment(appointment: schemas.AppointmentCreate, db: Session = Dep
     # if usr["profile_id"] != profile_id:
     #     raise HTTPException(status_code=401, detail="Unauthorized access to create profile")
 
-    return crud.create_appointment(db, profile)
+    return crud.create_appointment(db, appointment)
 
 # read appointment by appointment id
 @app.get("/appointment/{appointment_id}", response_model=list[schemas.Appointment])
