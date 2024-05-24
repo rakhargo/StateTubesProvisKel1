@@ -76,6 +76,7 @@ class AppointmentBase(BaseModel):
     facilityId: int
     status: str
     waktu: Optional[datetime]
+    metodePembayaran: str
 
 class AppointmentCreate(AppointmentBase):
     pass

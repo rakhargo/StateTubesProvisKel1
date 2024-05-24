@@ -265,7 +265,7 @@ def create_appointment(appointment: schemas.AppointmentCreate, db: Session = Dep
     return crud.create_appointment(db, appointment)
 
 # read appointment by appointment id
-@app.get("/appointment/{appointment_id}", response_model=list[schemas.Appointment])
+@app.get("/appointment/{appointment_id}", response_model=schemas.Appointment)
 def read_appointment(appointment_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     usr = verify_token(token)
 
