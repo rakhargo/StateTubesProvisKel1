@@ -35,16 +35,6 @@ class ProfileBase(BaseModel):
     userId: int
     isMainProfile: int
 
-    @field_validator("tanggalLahir", pre=True)
-    def parse_tanggal_lahir(cls, value):
-        if isinstance(value, str):
-            return date.fromisoformat(value)
-        return value
-
-    @property
-    def formatted_tanggal_lahir(self):
-        return self.tanggalLahir.strftime("%d %m %Y")
-
 class ProfileCreate(ProfileBase):
     pass
 
@@ -56,6 +46,16 @@ class Profile(ProfileBase):
 
     class Config:
         orm_mode = True
+
+    @field_validator("tanggalLahir")
+    def parse_tanggal_lahir(cls, value):
+        if isinstance(value, str):
+            return date.fromisoformat(value)
+        return value
+
+    @property
+    def formatted_tanggal_lahir(self):
+        return self.tanggalLahir.strftime("%d %m %Y")
 
 ###############################
 # profileRelation
@@ -103,12 +103,6 @@ class AppointmentBase(BaseModel):
     medicalRecordId: int
     antrian: int
 
-    @field_validator("waktu", pre=True)
-    def parse_waktu(cls, value):
-        if isinstance(value, str):
-            return int(value)
-        return value
-
 class AppointmentCreate(AppointmentBase):
     pass
 
@@ -121,6 +115,12 @@ class Appointment(AppointmentBase):
     class Config:
         orm_mode = True
 
+    @field_validator("waktu")
+    def parse_waktu(cls, value):
+        if isinstance(value, str):
+            return int(value)
+        return value
+
 ###############################
 # Doctor Schedule
 
@@ -132,19 +132,31 @@ class DoctorScheduleBase(BaseModel):
     currentBooking: int
     doctorId: int
 
-    @field_validator("tanggal", pre=True)
+class DoctorScheduleCreate(DoctorScheduleBase):
+    pass
+
+class DoctorScheduleUpdate(DoctorScheduleBase):
+    pass
+
+class DoctorSchedule(DoctorScheduleBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+    @field_validator("tanggal")
     def parse_tanggal(cls, value):
         if isinstance(value, str):
             return date.fromisoformat(value)
         return value
 
-    @field_validator("mulai", pre=True)
+    @field_validator("mulai")
     def parse_mulai(cls, value):
         if isinstance(value, str):
             return time.fromisoformat(value)
         return value
 
-    @field_validator("selesai", pre=True)
+    @field_validator("selesai")
     def parse_selesai(cls, value):
         if isinstance(value, str):
             return time.fromisoformat(value)
@@ -161,18 +173,6 @@ class DoctorScheduleBase(BaseModel):
     @property
     def formatted_selesai(self):
         return self.selesai.strftime("%H:%M:%S")
-
-class DoctorScheduleCreate(DoctorScheduleBase):
-    pass
-
-class DoctorScheduleUpdate(DoctorScheduleBase):
-    pass
-
-class DoctorSchedule(DoctorScheduleBase):
-    id: int
-
-    class Config:
-        orm_mode = True
 
 ###############################
 # article
@@ -229,7 +229,7 @@ class MedicalRecord(MedicalRecordBase):
     class Config:
         orm_mode = True
 
-    @field_validator("dateTime")
+    @field_validator("date")
     def parse_dateTime(cls, value):
         if isinstance(value, str):
             return datetime.fromisoformat(value)
@@ -317,16 +317,6 @@ class ReviewBase(BaseModel):
     komentar: str
     tanggal: date
 
-    @field_validator("tanggal", pre=True)
-    def parse_tanggal(cls, value):
-        if isinstance(value, str):
-            return date.fromisoformat(value)
-        return value
-    
-    @property
-    def formatted_tanggal(self):
-        return self.tanggal.strftime("%d %m %Y")
-
 class ReviewCreate(ReviewBase):
     pass
 
@@ -338,6 +328,16 @@ class Review(ReviewBase):
 
     class Config:
         orm_mode = True
+
+    @field_validator("tanggal")
+    def parse_tanggal(cls, value):
+        if isinstance(value, str):
+            return date.fromisoformat(value)
+        return value
+    
+    @property
+    def formatted_tanggal(self):
+        return self.tanggal.strftime("%d %m %Y")
 
 ###############################
 # service
