@@ -1,6 +1,6 @@
 from pydantic import BaseModel, field_validator
 from typing import Optional
-from datetime import date, datetime
+from datetime import date, time, datetime
 from typing import Optional
 
 ###############################
@@ -33,6 +33,17 @@ class ProfileBase(BaseModel):
     noTelepon: str
     userPhoto: Optional[str] = None
     userId: int
+    isMainProfile: int
+
+    @field_validator("tanggalLahir", pre=True)
+    def parse_tanggal_lahir(cls, value):
+        if isinstance(value, str):
+            return date.fromisoformat(value)
+        return value
+
+    @property
+    def formatted_tanggal_lahir(self):
+        return self.tanggalLahir.strftime("%d %m %Y")
 
 class ProfileCreate(ProfileBase):
     pass
@@ -46,11 +57,23 @@ class Profile(ProfileBase):
     class Config:
         orm_mode = True
 
-    @field_validator("tanggalLahir")
-    def parse_tanggal_lahir(cls, value):
-        if isinstance(value, str):
-            return date.fromisoformat(value)
-        return value
+###############################
+# profileRelation
+
+class ProfileRelationBase(BaseModel):
+    userId: str
+
+class ProfileRelationCreate(ProfileRelationBase):
+    pass
+
+class ProfileRelationUpdate(ProfileRelationBase):
+    pass
+
+class ProfileRelation(ProfileRelationBase):
+    id: int
+
+    class Config:
+        orm_mode = True
 
 ###############################
 # doctor
@@ -75,8 +98,16 @@ class AppointmentBase(BaseModel):
     doctorId: int
     facilityId: int
     status: str
-    waktu: Optional[datetime]
+    waktu: Optional[int]
     metodePembayaran: str
+    medicalRecordId: int
+    antrian: int
+
+    @field_validator("waktu", pre=True)
+    def parse_waktu(cls, value):
+        if isinstance(value, str):
+            return int(value)
+        return value
 
 class AppointmentCreate(AppointmentBase):
     pass
@@ -90,12 +121,58 @@ class Appointment(AppointmentBase):
     class Config:
         orm_mode = True
 
-    @field_validator("waktu")
-    def parse_waktu(cls, value):
+###############################
+# Doctor Schedule
+
+class DoctorScheduleBase(BaseModel):
+    tanggal: date
+    mulai: time
+    selesai: time
+    maxBooking: int
+    currentBooking: int
+    doctorId: int
+
+    @field_validator("tanggal", pre=True)
+    def parse_tanggal(cls, value):
         if isinstance(value, str):
-            return datetime.fromisoformat(value)
+            return date.fromisoformat(value)
         return value
+
+    @field_validator("mulai", pre=True)
+    def parse_mulai(cls, value):
+        if isinstance(value, str):
+            return time.fromisoformat(value)
+        return value
+
+    @field_validator("selesai", pre=True)
+    def parse_selesai(cls, value):
+        if isinstance(value, str):
+            return time.fromisoformat(value)
+        return value
+
+    @property
+    def formatted_tanggal(self):
+        return self.tanggal.strftime("%d %m %Y")
     
+    @property
+    def formatted_mulai(self):
+        return self.mulai.strftime("%H:%M:%S")
+    
+    @property
+    def formatted_selesai(self):
+        return self.selesai.strftime("%H:%M:%S")
+
+class DoctorScheduleCreate(DoctorScheduleBase):
+    pass
+
+class DoctorScheduleUpdate(DoctorScheduleBase):
+    pass
+
+class DoctorSchedule(DoctorScheduleBase):
+    id: int
+
+    class Config:
+        orm_mode = True
 
 ###############################
 # article
@@ -136,7 +213,7 @@ class HealthFacility(BaseModel):
 
 class MedicalRecordBase(BaseModel):
     patientId: int
-    dateTime: Optional[datetime]
+    date: Optional[date]
     jenisTes: str
     hasilTes: str
 
@@ -173,6 +250,63 @@ class ReferralRead(BaseModel):
         orm_mode = True
 
 ###############################
+# relasiDokterRsPoli
+
+class RelasiDokterRsPoliBase(BaseModel):
+    doctorId: int
+    relasiRsPoliId: int
+
+class RelasiDokterRsPoliCreate(RelasiDokterRsPoliBase):
+    pass
+
+class RelasiDokterRsPoliUpdate(RelasiDokterRsPoliBase):
+    pass
+
+class RelasiDokterRsPoli(RelasiDokterRsPoliBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+###############################
+# relasiJudulPoli
+
+class RelasiJudulPoliBase(BaseModel):
+    judul: str
+    polyclinicId: int
+
+class RelasiJudulPoliCreate(RelasiJudulPoliBase):
+    pass
+
+class RelasiJudulPoliUpdate(RelasiJudulPoliBase):
+    pass
+
+class RelasiJudulPoli(RelasiJudulPoliBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+###############################
+# relasiRsPoli
+
+class RelasiRsPoliBase(BaseModel):
+    rsId: int
+    poliId: int
+
+class RelasiRsPoliCreate(RelasiRsPoliBase):
+    pass
+
+class RelasiRsPoliUpdate(RelasiRsPoliBase):
+    pass
+
+class RelasiRsPoli(RelasiRsPoliBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+###############################
 # Review
 
 class ReviewBase(BaseModel):
@@ -182,6 +316,16 @@ class ReviewBase(BaseModel):
     rating: int
     komentar: str
     tanggal: date
+
+    @field_validator("tanggal", pre=True)
+    def parse_tanggal(cls, value):
+        if isinstance(value, str):
+            return date.fromisoformat(value)
+        return value
+    
+    @property
+    def formatted_tanggal(self):
+        return self.tanggal.strftime("%d %m %Y")
 
 class ReviewCreate(ReviewBase):
     pass
@@ -195,20 +339,13 @@ class Review(ReviewBase):
     class Config:
         orm_mode = True
 
-    @field_validator("tanggal")
-    def parse_tanggal(cls, value):
-        if isinstance(value, str):
-            return date.fromisoformat(value)
-        return value
-    
-
 ###############################
 # service
 
 class Service(BaseModel):
     id: int
     icon: str
-    nama: str
+    name: str
     childText: str
     status: str
 

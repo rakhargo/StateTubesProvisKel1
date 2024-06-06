@@ -217,6 +217,24 @@ def delete_profile(profile_id: int, db: Session = Depends(get_db), token: str = 
 
     return {"message": "Profile deleted successfully"}
 
+###################  profile relation
+
+# Get all Profile Relations
+@app.get("/profile_relation/", response_model=list[schemas.ProfileRelation])
+def read_all_profile_relations(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+    profile_relations = crud.get_all_profile_relations(db)
+    return profile_relations
+
+# Get Profile Relation by ID
+@app.get("/profile_relation/{relation_id}", response_model=schemas.ProfileRelation)
+def read_profile_relation(relation_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+    profile_relation = crud.get_relation_id(db, relation_id)
+    if profile_relation is None:
+        raise HTTPException(status_code=404, detail="ProfileRelation not found")
+    return profile_relation
+
 ###################  doctor
 
 # Get all doctor
@@ -249,7 +267,28 @@ def read_doctor_image(doctor_id:int, db: Session = Depends(get_db),token: str = 
     
     return FileResponse(path_img+nama_image)
 
-###################  appointments ############# BELUM WOY
+
+###################  doctor schedule
+
+# Get all Doctor Schedules
+@app.get("/doctor_schedule/", response_model=list[schemas.DoctorSchedule])
+def read_all_doctor_schedules(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    doctor_schedules = crud.get_all_doctor_schedules(db)
+    return doctor_schedules
+
+# Get Doctor Schedule by ID
+@app.get("/doctor_schedule/{doctor_schedule_id}", response_model=schemas.DoctorSchedule)
+def read_doctor_schedule(doctor_schedule_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    doctor_schedule = crud.get_doctor_schedule_id(db, doctor_schedule_id)
+    if doctor_schedule is None:
+        raise HTTPException(status_code=404, detail="DoctorSchedule not found")
+    return doctor_schedule
+
+###################  appointments
 
 # create appointment
     # belum pake profile id buat validasi, bisa diinject profile lain
@@ -270,6 +309,7 @@ def read_appointment(appointment_id: int, db: Session = Depends(get_db), token: 
     usr = verify_token(token)
 
     appointment = crud.get_appointment(db, appointment_id)
+    db.refresh(appointment)  # Ensure relationships are loaded
     return appointment
 
 # read appointment by profile id
@@ -277,8 +317,10 @@ def read_appointment(appointment_id: int, db: Session = Depends(get_db), token: 
 def read_appointment_profile_id(profile_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     usr = verify_token(token)
 
-    appointment_profile = crud.get_appointments_by_profile_id(db, profile_id)
-    return appointment_profile
+    appointments_profile = crud.get_appointments_by_profile_id(db, profile_id)
+    for appointment in appointments_profile:
+        db.refresh(appointment)  # Ensure relationships are loaded for each appointment
+    return appointments_profile
 
 # update appointment
 @app.put("/appointment_update/{appointment_id}", response_model=schemas.Appointment)
@@ -376,6 +418,68 @@ def read_refferal_by_id(refferal_id: int, db: Session = Depends(get_db), token: 
 
     refferal = crud.get_refferal(db, refferal_id)
     return refferal
+
+###################  relasiDokterRsPoli #############
+
+# Get all RelasiDokterRsPoli
+@app.get("/relasi_dokter_rs_poli/", response_model=list[schemas.RelasiDokterRsPoli])
+def read_all_relasi_dokter_rs_poli(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    relasi_dokter_rs_poli = crud.get_all_relasi_dokter_rs_poli(db)
+    return relasi_dokter_rs_poli
+
+# Get RelasiDokterRsPoli by ID
+@app.get("/relasi_dokter_rs_poli/{relasi_dokter_rs_poli_id}", response_model=schemas.RelasiDokterRsPoli)
+def read_relasi_dokter_rs_poli(relasi_dokter_rs_poli_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    relasi_dokter_rs_poli = crud.get_relasi_dokter_rs_poli(db, relasi_dokter_rs_poli_id)
+    if relasi_dokter_rs_poli is None:
+        raise HTTPException(status_code=404, detail="RelasiDokterRsPoli not found")
+    return relasi_dokter_rs_poli
+
+###################  relasiJudulPoli #############
+
+# Get all RelasiJudulPoli
+@app.get("/relasi_judul_poli/", response_model=list[schemas.RelasiJudulPoli])
+def read_all_relasi_judul_poli(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    relasi_judul_poli = crud.get_all_relasi_judul_poli(db)
+    return relasi_judul_poli
+
+# Get RelasiJudulPoli by ID
+@app.get("/relasi_judul_poli/{relasi_judul_poli_id}", response_model=schemas.RelasiJudulPoli)
+def read_relasi_judul_poli(relasi_judul_poli_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    relasi_judul_poli = crud.get_relasi_judul_poli(db, relasi_judul_poli_id)
+    if relasi_judul_poli is None:
+        raise HTTPException(status_code=404, detail="RelasiJudulPoli not found")
+    return relasi_judul_poli
+
+###################  relasiRSPoli #############
+
+# Get all RelasiRsPoli
+@app.get("/relasi_rs_poli/", response_model=list[schemas.RelasiRsPoli])
+def read_all_relasi_rs_poli(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    relasi_rs_poli = crud.get_all_relasi_rs_poli(db)
+    return relasi_rs_poli
+
+# Get RelasiRsPoli by ID
+@app.get("/relasi_rs_poli/{relasi_rs_poli_id}", response_model=schemas.RelasiRsPoli)
+def read_relasi_rs_poli(relasi_rs_poli_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    relasi_rs_poli = crud.get_relasi_rs_poli(db, relasi_rs_poli_id)
+    if relasi_rs_poli is None:
+        raise HTTPException(status_code=404, detail="RelasiRsPoli not found")
+    return relasi_rs_poli
+
+#######################################################################################################
 
 ###################  review ############# BELUM WOY
 

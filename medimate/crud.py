@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session,  joinedload
 import models, schemas
 import bcrypt
 from sqlalchemy import desc
@@ -76,6 +76,17 @@ def delete_profile(db: Session, profile_id: int):
     return {"message": "Profile deleted successfully"}
 
 #######################################################################################################
+# profile relation
+
+# Get profile relation by ID
+def get_relation_id(db: Session, relation_id: int):
+    return db.query(models.ProfileRelation).filter(models.ProfileRelation.id == relation_id).first()
+
+# Get all doctors
+def get_all_relations(db: Session):
+    return db.query(models.ProfileDoctor).all()
+
+#######################################################################################################
 # Doctor
 
 # Get Doctor by ID
@@ -85,6 +96,17 @@ def get_doctor_id(db: Session, doctor_id: int):
 # Get all doctors
 def get_all_doctors(db: Session):
     return db.query(models.Doctor).all()
+
+#######################################################################################################
+# Doctor Schedule
+
+# Get Doctor Schedule by ID
+def get_doctor_schedule_id(db: Session, doctorSchedule_id: int):
+    return db.query(models.DoctorSchedule).filter(models.DoctorSchedule.id == doctorSchedule_id).first()
+
+# Get all doctors
+def get_all_doctor_schedules(db: Session):
+    return db.query(models.DoctorSchedule).all()
 
 #######################################################################################################
 # Appointments
@@ -99,11 +121,15 @@ def create_appointment(db: Session, appointment: schemas.AppointmentCreate):
 
 # Get Appointment
 def get_appointment(db: Session, appointment_id: int):
-    return db.query(models.Appointment).filter(models.Appointment.id == appointment_id).first()
+    return db.query(models.Appointment).\
+            options(joinedload(models.Appointment.doctor), joinedload(models.Appointment.facility)).\
+            filter(models.Appointment.id == appointment_id).first()
 
 # Get Appointments by Profile ID
 def get_appointments_by_profile_id(db: Session, profile_id: int):
-    return db.query(models.Appointment).filter(models.Appointment.patientId == profile_id).all()
+    return db.query(models.Appointment).\
+            options(joinedload(models.Appointment.doctor), joinedload(models.Appointment.facility)).\
+            filter(models.Appointment.patientId == profile_id).all()
 
 # Update Appointment
 def update_appointment(db: Session, appointment_id: int, appointment: schemas.AppointmentUpdate):
@@ -178,6 +204,39 @@ def get_referral(db: Session, referral_id: int):
 # Get all Referrals
 def get_all_referrals(db: Session):
     return db.query(models.Referral).all()
+
+#######################################################################################################
+# relasiDokterRsPoli
+
+# Get RelasiDokterRsPoli by ID
+def get_relasi_dokter_rs_poli(db: Session, relasi_dokter_rs_poli_id: int):
+    return db.query(models.RelasiDokterRsPoliModel).filter(models.RelasiDokterRsPoliModel.id == relasi_dokter_rs_poli_id).first()
+
+# Get all RelasiDokterRsPoli
+def get_all_relasi_dokter_rs_poli(db: Session):
+    return db.query(models.RelasiDokterRsPoliModel).all()
+
+#######################################################################################################
+# relasiJudulPoli
+
+# Get RelasiJudulPoli by ID
+def get_relasi_judul_poli(db: Session, relasi_judul_poli_id: int):
+    return db.query(models.RelasiJudulPoliModel).filter(models.RelasiJudulPoliModel.id == relasi_judul_poli_id).first()
+
+# Get all RelasiJudulPoli
+def get_all_relasi_judul_poli(db: Session):
+    return db.query(models.RelasiJudulPoliModel).all()
+
+#######################################################################################################
+# relasiRsPoli
+
+# Get RelasiRsPoli by ID
+def get_relasi_rs_poli(db: Session, relasi_rs_poli_id: int):
+    return db.query(models.RelasiRsPoliModel).filter(models.RelasiRsPoliModel.id == relasi_rs_poli_id).first()
+
+# Get all RelasiRsPoli
+def get_all_relasi_rs_poli(db: Session):
+    return db.query(models.RelasiRsPoliModel).all()
 
 #######################################################################################################
 # review

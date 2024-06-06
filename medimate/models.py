@@ -1,7 +1,10 @@
 from database import BaseDB
-from sqlalchemy import Column, ForeignKey, Integer, String, Date
-from sqlalchemy import DateTime
+from sqlalchemy import Column, ForeignKey, Integer, String, Date, Time, DateTime, Table
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 class User(BaseDB):
     __tablename__ = "users"
@@ -12,18 +15,24 @@ class User(BaseDB):
 class Profile(BaseDB):
     __tablename__ = "profile"
     id = Column(Integer, primary_key=True)
+    userId = Column(Integer, ForeignKey('users.id'), nullable=False)
     nama = Column(String, unique=True, index=True)
     tanggalLahir = Column(Date)
     jenisKelamin = Column(String, nullable=False)
     alamat = Column(String, nullable=False)
-    noTelepon = Column(String, nullable=False)
     email = Column(String, nullable=False)
+    noTelepon = Column(String, nullable=False)
     userPhoto = Column(String)
-    userId = Column(Integer, ForeignKey('users.id'), nullable=False)
+    isMainProfile = Column(Integer, ForeignKey('profileRelation.id'), nullable=False)
 
     @hybrid_property
     def formatted_tanggal_lahir(self):
         return self.tanggal_lahir.strftime("%d %m %Y")
+    
+class ProfileRelation(BaseDB):
+    __tablename__ = "profileRelation"
+    id = Column(Integer, primary_key=True)
+    userId = Column(String, nullable=False)
 
 class Doctor(BaseDB):
     __tablename__ = "doctor"
@@ -33,6 +42,24 @@ class Doctor(BaseDB):
     pengalaman = Column(Integer, nullable=False)
     foto = Column(String)
 
+class DoctorSchedule(BaseDB):
+    __tablename__ = "doctorSchedule"
+    id = Column(Integer, primary_key=True)
+    tanggal = Column(Date)
+    mulai = Column(Time)
+    selesai = Column(Time)
+    maxBooking = Column(Integer, nullable=False)
+    currentBooking = Column(Integer, nullable=False)
+    doctorId = Column(Integer, ForeignKey("doctor.id"), nullable=False)
+
+    @hybrid_property
+    def formatted_tanggal(self):
+        return self.tanggal.strftime("%d %m %Y")
+    def formatted_mulai(self):
+        return self.mulai.strftime("%H:%M:%S")
+    def formatted_selesai(self):
+        return self.selesai.strftime("%H:%M:%S")
+
 class Appointment(BaseDB):
     __tablename__ = "appointment"
     id = Column(Integer, primary_key=True)
@@ -40,12 +67,13 @@ class Appointment(BaseDB):
     doctorId = Column(Integer, ForeignKey('doctor.id'), nullable=False)
     facilityId = Column(Integer, ForeignKey('healthFacility.id'), nullable=False)
     status = Column(String, nullable=False)
+    waktu = Column(Integer, nullable=False)
     metodePembayaran = Column(String, nullable=False)
-    waktu = Column(DateTime)
+    medicalRecordId = Column(Integer, nullable=False)
+    antrian = Column(Integer, nullable=False)
 
-    @hybrid_property
-    def formatted_dateTime(self):
-        return self.dateTime.strftime("%d %m %Y %H:%M:%S")
+    doctor = relationship('Doctor')
+    facility = relationship('HealthFacility')
 
 class HealthArticle(BaseDB):
     __tablename__ = "healthArticle"
@@ -75,13 +103,13 @@ class MedicalRecord(BaseDB):
     __tablename__ = "medicalRecord"
     id = Column(Integer, primary_key=True)
     patientId = Column(Integer, ForeignKey('profile.id'), nullable=False)
-    dateTime = Column(DateTime)
+    date = Column(Date)
     jenisTes = Column(String, nullable=False)
     hasilTes = Column(String, nullable=False)
 
     @hybrid_property
-    def formatted_dateTime(self):
-        return self.tanggal.strftime("%d %m %Y %H:%M:%S")
+    def formatted_date(self):
+        return self.date.strftime("%d %m %Y")
 
 class Referral(BaseDB):
     __tablename__ = "referral"
@@ -95,6 +123,24 @@ class Referral(BaseDB):
     @hybrid_property
     def formatted_tanggal(self):
         return self.tanggal.strftime("%d %m %Y")
+    
+class RelasiDokterRsPoli(BaseDB):
+    __tablename__ = "relasiDokterRsPoli"
+    id = Column(Integer, primary_key=True)
+    doctorId = Column(Integer, ForeignKey("doctor.id"), nullable=False)
+    relasiRsPoliId = Column(Integer, ForeignKey("relasiRsPoli.id"), nullable=False)
+
+class RelasiJudulPoli(BaseDB):
+    __tablename__ = "relasiJudulPoli"
+    id = Column(Integer, primary_key=True)
+    judul = Column(String, nullable=False)
+    polyclinicId = Column(Integer, ForeignKey("SpecialistAndPolyclinic.id"), nullable=False)
+
+class RelasiRsPoli(BaseDB):
+    __tablename__ = "relasiRsPoli"
+    id = Column(Integer, primary_key=True)
+    rsId = Column(Integer, ForeignKey("healthFacility.id"), nullable=False)
+    poliId = Column(Integer, ForeignKey("SpecialistAndPolyclinic.id"), nullable=False)
 
 class Review(BaseDB):
     __tablename__ = "review"
@@ -114,10 +160,9 @@ class Services(BaseDB):
     __tablename__ = "services"
     id = Column(Integer, primary_key=True)
     icon = Column(String)
-    nama = Column(String, nullable=False)
+    name = Column(String, nullable=False)
     childText = Column(String, nullable=False)
     status = Column(String, nullable=False)
-
 
 class SpecialistAndPolyclinic(BaseDB):
     __tablename__ = "specialistAndPolyclinic"
