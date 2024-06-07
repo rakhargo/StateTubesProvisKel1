@@ -122,6 +122,10 @@ def update_doctor_schedule(db: Session, doctor_schedule_id: int, doctorSchedule:
 def get_doctor_schedule_id(db: Session, doctorSchedule_id: int):
     return db.query(models.DoctorSchedule).filter(models.DoctorSchedule.id == doctorSchedule_id).first()
 
+# Get Doctor Schedule by doctor ID
+def get_doctor_schedule_doctor_id(db: Session, doctor_id: int):
+    return db.query(models.DoctorSchedule).filter(models.DoctorSchedule.doctorId == doctor_id).all()
+
 # Get all doctors
 def get_all_doctor_schedules(db: Session):
     return db.query(models.DoctorSchedule).all()

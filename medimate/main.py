@@ -74,7 +74,7 @@ async def login(user: schemas.UserCreate, db: Session = Depends(get_db)):
     # ambil informasi username
     user_login = crud.get_user_by_username(db,user.username)
     if user_login:
-        access_token  = create_access_token(user.username)
+        access_token = create_access_token(user.username)
         user_id = user_login.id
         return {"user_id":user_id,"access_token": access_token}
     else:
@@ -278,7 +278,7 @@ def update_doctor_schedule(doctor_schedule_id: int, doctor_schedule: schemas.Doc
     usr = verify_token(token)
     db_doctor_schedule = crud.get_doctor_schedule_id(db, doctor_schedule_id)
     if db_doctor_schedule is None:
-        raise HTTPException(status_code=404, detail="DoctorSchedule not found")
+        raise HTTPException(status_code=404, detail=f"Doctor schedule not found for id = {doctor_schedule_id}")
     return crud.update_doctor_schedule(db=db, doctor_schedule_id=doctor_schedule_id, doctorSchedule=doctor_schedule)
 
 # Get all Doctor Schedules
@@ -290,14 +290,24 @@ def read_all_doctor_schedules(db: Session = Depends(get_db), token: str = Depend
     return doctor_schedules
 
 # Get Doctor Schedule by ID
-@app.get("/doctor_schedule/{doctor_schedule_id}", response_model=schemas.DoctorSchedule)
+@app.get("/doctor_schedule_id/{doctor_schedule_id}", response_model=schemas.DoctorSchedule)
 def read_doctor_schedule(doctor_schedule_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     usr = verify_token(token)
 
     doctor_schedule = crud.get_doctor_schedule_id(db, doctor_schedule_id)
     if doctor_schedule is None:
-        raise HTTPException(status_code=404, detail="Doctor Schedule not found for doctor id :" + doctor_schedule_id)
+        raise HTTPException(status_code=404, detail=f"Doctor schedule not found for id = {doctor_schedule_id}")
     return doctor_schedule
+
+# Get Doctor Schedule by ID
+@app.get("/doctor_schedule_doctor_id/{doctor_id}", response_model=list[schemas.DoctorSchedule])
+def read_doctor_schedule_doctor_id(doctor_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    doctor_schedule_doctor_id = crud.get_doctor_schedule_doctor_id(db, doctor_id)
+    if not doctor_schedule_doctor_id:
+        raise HTTPException(status_code=404, detail=f"Doctor schedule not found for doctor id = {doctor_id}")
+    return doctor_schedule_doctor_id
 
 ###################  appointments
 
@@ -557,7 +567,18 @@ def read_services_image(service_id:int, db: Session = Depends(get_db),token: str
 def read_specialist_and_polyclinic(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)): # db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)
     usr =  verify_token(token)
     specialist_and_polyclinic = crud.get_all_specialist_and_polyclinics(db)
+    if not specialist_and_polyclinic:
+        raise HTTPException(status_code=404, detail="no specialist and polyclinic found")
     return specialist_and_polyclinic
+
+# specialist and poly by id
+@app.get("/specialist_and_polyclinic/{specialist_and_polyclinic_id}", response_model=schemas.SpecialistAndPolyclinic)
+def read_profile_specialist_and_polyclinic_id(specialist_and_polyclinic_id : int, db: Session = Depends(get_db), token : str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+    specialist_and_polyclinic = crud.get_polyclinic_by_id(db, specialist_and_polyclinic_id)
+    if specialist_and_polyclinic is None:
+        raise HTTPException(status_code=404, detail=f"no specialist and polyclinic found with id = {specialist_and_polyclinic_id}")
+    return crud.get_polyclinic_by_id(db, specialist_and_polyclinic_id)
 
 # image specialist and polyclinic berdasarkan id
 @app.get("/specialist_and_polyclinic_images/{specialist_and_polyclinic_id}")
