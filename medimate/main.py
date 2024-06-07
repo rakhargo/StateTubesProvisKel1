@@ -536,7 +536,7 @@ def read_all_relasi_rs_poli(db: Session = Depends(get_db), token: str = Depends(
     return relasi_rs_poli
 
 # Get relasirspoli by rs_id
-@app.get("/relasi_rs_poli_id/{rs_id}", response_model=list[schemas.RelasiRsPoli])
+@app.get("/relasi_rs_poli_rs_id/{rs_id}", response_model=list[schemas.RelasiRsPoli])
 def read_all_relasi_rs_poli_rs_id(rs_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     usr = verify_token(token)
 
