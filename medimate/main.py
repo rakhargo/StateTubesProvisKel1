@@ -465,6 +465,26 @@ def read_all_relasi_dokter_rs_poli(db: Session = Depends(get_db), token: str = D
     relasi_dokter_rs_poli = crud.get_all_relasi_dokter_rs_poli(db)
     return relasi_dokter_rs_poli
 
+# Get RelasiDokterRsPoli by doctor id
+@app.get("/relasi_dokter_rs_poli_doctor_id/{doctor_id}", response_model=list[schemas.RelasiDokterRsPoli])
+def read_all_relasi_dokter_rs_poli(doctor_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    relasi_dokter_rs_poli = crud.get_relasi_dokter_rs_poli_doctor_id(db, doctor_id)
+    if not relasi_dokter_rs_poli:
+        raise HTTPException(status_code=404, detail= f"RelasiDokterRsPoli not found with doctor_id = {doctor_id}")
+    return relasi_dokter_rs_poli
+
+# Get RelasiDokterRsPoli by relasirspoli id
+@app.get("/relasi_dokter_rs_poli_relasirspoli_id/{relasirspoli_id}", response_model=list[schemas.RelasiDokterRsPoli])
+def read_all_relasi_dokter_rs_poli(relasirspoli_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    relasi_dokter_rs_poli = crud.get_relasi_dokter_rs_poli_doctor_id(db, relasirspoli_id)
+    if not relasi_dokter_rs_poli:
+        raise HTTPException(status_code=404, detail= f"RelasiDokterRsPoli not found with relasirspoli_id = {relasirspoli_id}")
+    return relasi_dokter_rs_poli
+
 # Get RelasiDokterRsPoli by ID
 @app.get("/relasi_dokter_rs_poli/{relasi_dokter_rs_poli_id}", response_model=schemas.RelasiDokterRsPoli)
 def read_relasi_dokter_rs_poli(relasi_dokter_rs_poli_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
@@ -485,6 +505,16 @@ def read_all_relasi_judul_poli(db: Session = Depends(get_db), token: str = Depen
     relasi_judul_poli = crud.get_all_relasi_judul_poli(db)
     return relasi_judul_poli
 
+# Get relasijudulpoli by poli_id
+@app.get("/relasi_judul_poli_id/{poly_id}", response_model=list[schemas.RelasiJudulPoli])
+def read_all_relasi_judul_poli_id(poly_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    relasi_judul_poli = crud.get_relasi_judul_poli_id(db, poly_id)
+    if not relasi_judul_poli:
+        raise HTTPException(status_code=404, detail= f"RelasiDokterRsPoli not found with poly_id = {poly_id}")
+    return relasi_judul_poli
+
 # Get RelasiJudulPoli by ID
 @app.get("/relasi_judul_poli/{relasi_judul_poli_id}", response_model=schemas.RelasiJudulPoli)
 def read_relasi_judul_poli(relasi_judul_poli_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
@@ -503,6 +533,26 @@ def read_all_relasi_rs_poli(db: Session = Depends(get_db), token: str = Depends(
     usr = verify_token(token)
 
     relasi_rs_poli = crud.get_all_relasi_rs_poli(db)
+    return relasi_rs_poli
+
+# Get relasirspoli by rs_id
+@app.get("/relasi_rs_poli_id/{rs_id}", response_model=list[schemas.RelasiRsPoli])
+def read_all_relasi_rs_poli_rs_id(rs_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    relasi_rs_poli = crud.get_relasi_rs_poli_rs_id(db, rs_id)
+    if not relasi_rs_poli:
+        raise HTTPException(status_code=404, detail= f"RelasiRsPoli not found with rs_id = {rs_id}")
+    return relasi_rs_poli
+
+# Get relasirspoli by poli_id
+@app.get("/relasi_rs_poli_id/{poly_id}", response_model=list[schemas.RelasiRsPoli])
+def read_all_relasi_rs_poli_id(poly_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    relasi_rs_poli = crud.get_relasi_rs_poli_id(db, poly_id)
+    if not relasi_rs_poli:
+        raise HTTPException(status_code=404, detail= f"RelasiRsPoli not found with poly_id = {poly_id}")
     return relasi_rs_poli
 
 # Get RelasiRsPoli by ID

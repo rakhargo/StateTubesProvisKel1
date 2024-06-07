@@ -238,6 +238,14 @@ def get_referral(db: Session, referral_id: int):
 def get_relasi_dokter_rs_poli(db: Session, relasi_dokter_rs_poli_id: int):
     return db.query(models.RelasiDokterRsPoli).filter(models.RelasiDokterRsPoli.id == relasi_dokter_rs_poli_id).first()
 
+# Get RelasiDokterRsPoli by doctorID
+def get_relasi_dokter_rs_poli_doctor_id(db: Session, doctor_id: int):
+    return db.query(models.RelasiDokterRsPoli).filter(models.RelasiDokterRsPoli.doctorId == doctor_id).all()
+
+# Get RelasiDokterRsPoli by relasi rs poli id
+def get_relasi_dokter_rs_poli_relasirspoli_id(db: Session, relasirspoli_id: int):
+    return db.query(models.RelasiDokterRsPoli).filter(models.RelasiDokterRsPoli.relasiRsPoliIdId == relasirspoli_id).all()
+
 # Get all RelasiDokterRsPoli
 def get_all_relasi_dokter_rs_poli(db: Session):
     return db.query(models.RelasiDokterRsPoli).all()
@@ -249,6 +257,10 @@ def get_all_relasi_dokter_rs_poli(db: Session):
 def get_relasi_judul_poli(db: Session, relasi_judul_poli_id: int):
     return db.query(models.RelasiJudulPoli).filter(models.RelasiJudulPoli.id == relasi_judul_poli_id).first()
 
+# Get RelasiJudulPoli by poly ID
+def get_relasi_judul_poli_id(db: Session, poli_id: int):
+    return db.query(models.RelasiJudulPoli).filter(models.RelasiJudulPoli.polyclinicId == poli_id).all()
+
 # Get all RelasiJudulPoli
 def get_all_relasi_judul_poli(db: Session):
     return db.query(models.RelasiJudulPoli).all()
@@ -259,6 +271,14 @@ def get_all_relasi_judul_poli(db: Session):
 # Get RelasiRsPoli by ID
 def get_relasi_rs_poli(db: Session, relasi_rs_poli_id: int):
     return db.query(models.RelasiRsPoli).filter(models.RelasiRsPoli.id == relasi_rs_poli_id).first()
+
+# Get RelasiRsPoli by poly ID
+def get_relasi_rs_poli_id(db: Session, poli_id: int):
+    return db.query(models.RelasiRsPoli).filter(models.RelasiRsPoli.poliId == poli_id).all()
+
+# Get RelasiRsPoli by rs ID
+def get_relasi_rs_poli_rs_id(db: Session, rs_id: int):
+    return db.query(models.RelasiRsPoli).filter(models.RelasiRsPoli.rsId == rs_id).all()
 
 # Get all RelasiRsPoli
 def get_all_relasi_rs_poli(db: Session):
