@@ -244,7 +244,7 @@ def get_relasi_dokter_rs_poli_doctor_id(db: Session, doctor_id: int):
 
 # Get RelasiDokterRsPoli by relasi rs poli id
 def get_relasi_dokter_rs_poli_relasirspoli_id(db: Session, relasirspoli_id: int):
-    return db.query(models.RelasiDokterRsPoli).filter(models.RelasiDokterRsPoli.relasiRsPoliIdId == relasirspoli_id).all()
+    return db.query(models.RelasiDokterRsPoli).filter(models.RelasiDokterRsPoli.relasiRsPoliId == relasirspoli_id).all()
 
 # Get all RelasiDokterRsPoli
 def get_all_relasi_dokter_rs_poli(db: Session):

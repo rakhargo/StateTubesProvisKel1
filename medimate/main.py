@@ -496,7 +496,7 @@ def read_all_relasi_dokter_rs_poli(doctor_id: int, db: Session = Depends(get_db)
 def read_all_relasi_dokter_rs_poli(relasirspoli_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     usr = verify_token(token)
 
-    relasi_dokter_rs_poli = crud.get_relasi_dokter_rs_poli_doctor_id(db, relasirspoli_id)
+    relasi_dokter_rs_poli = crud.get_relasi_dokter_rs_poli_relasirspoli_id(db, relasirspoli_id)
     if not relasi_dokter_rs_poli:
         raise HTTPException(status_code=404, detail= f"RelasiDokterRsPoli not found with relasirspoli_id = {relasirspoli_id}")
     return relasi_dokter_rs_poli
