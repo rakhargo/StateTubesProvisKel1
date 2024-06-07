@@ -32,7 +32,7 @@ class Profile(BaseDB):
 class ProfileRelation(BaseDB):
     __tablename__ = "profileRelation"
     id = Column(Integer, primary_key=True)
-    userId = Column(String, nullable=False)
+    relation = Column(String, nullable=False)
 
 class Doctor(BaseDB):
     __tablename__ = "doctor"

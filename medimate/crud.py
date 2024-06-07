@@ -82,9 +82,9 @@ def delete_profile(db: Session, profile_id: int):
 def get_relation_id(db: Session, relation_id: int):
     return db.query(models.ProfileRelation).filter(models.ProfileRelation.id == relation_id).first()
 
-# Get all doctors
-def get_all_relations(db: Session):
-    return db.query(models.ProfileDoctor).all()
+# Get all profile relation
+def get_all_profile_relations(db: Session):
+    return db.query(models.ProfileRelation).all()
 
 #######################################################################################################
 # Doctor
@@ -232,33 +232,33 @@ def get_referral(db: Session, referral_id: int):
 
 # Get RelasiDokterRsPoli by ID
 def get_relasi_dokter_rs_poli(db: Session, relasi_dokter_rs_poli_id: int):
-    return db.query(models.RelasiDokterRsPoliModel).filter(models.RelasiDokterRsPoliModel.id == relasi_dokter_rs_poli_id).first()
+    return db.query(models.RelasiDokterRsPoli).filter(models.RelasiDokterRsPoli.id == relasi_dokter_rs_poli_id).first()
 
 # Get all RelasiDokterRsPoli
 def get_all_relasi_dokter_rs_poli(db: Session):
-    return db.query(models.RelasiDokterRsPoliModel).all()
+    return db.query(models.RelasiDokterRsPoli).all()
 
 #######################################################################################################
 # relasiJudulPoli
 
 # Get RelasiJudulPoli by ID
 def get_relasi_judul_poli(db: Session, relasi_judul_poli_id: int):
-    return db.query(models.RelasiJudulPoliModel).filter(models.RelasiJudulPoliModel.id == relasi_judul_poli_id).first()
+    return db.query(models.RelasiJudulPoli).filter(models.RelasiJudulPoli.id == relasi_judul_poli_id).first()
 
 # Get all RelasiJudulPoli
 def get_all_relasi_judul_poli(db: Session):
-    return db.query(models.RelasiJudulPoliModel).all()
+    return db.query(models.RelasiJudulPoli).all()
 
 #######################################################################################################
 # relasiRsPoli
 
 # Get RelasiRsPoli by ID
 def get_relasi_rs_poli(db: Session, relasi_rs_poli_id: int):
-    return db.query(models.RelasiRsPoliModel).filter(models.RelasiRsPoliModel.id == relasi_rs_poli_id).first()
+    return db.query(models.RelasiRsPoli).filter(models.RelasiRsPoli.id == relasi_rs_poli_id).first()
 
 # Get all RelasiRsPoli
 def get_all_relasi_rs_poli(db: Session):
-    return db.query(models.RelasiRsPoliModel).all()
+    return db.query(models.RelasiRsPoli).all()
 
 #######################################################################################################
 # review

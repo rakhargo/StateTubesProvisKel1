@@ -61,7 +61,7 @@ class Profile(ProfileBase):
 # profileRelation
 
 class ProfileRelationBase(BaseModel):
-    userId: str
+    relation: str
 
 class ProfileRelationCreate(ProfileRelationBase):
     pass

@@ -320,6 +320,8 @@ def read_appointment(appointment_id: int, db: Session = Depends(get_db), token: 
     usr = verify_token(token)
 
     appointment = crud.get_appointment(db, appointment_id)
+    if appointment is None:
+        raise HTTPException(status_code=404, detail="Appointment not found")
     db.refresh(appointment)  # Ensure relationships are loaded
     return appointment
 
@@ -329,6 +331,8 @@ def read_appointment_profile_id(profile_id: int, db: Session = Depends(get_db), 
     usr = verify_token(token)
 
     appointments_profile = crud.get_appointments_by_profile_id(db, profile_id)
+    if not appointments_profile:
+        raise HTTPException(status_code=404, detail="Appointment not found")
     for appointment in appointments_profile:
         db.refresh(appointment)  # Ensure relationships are loaded for each appointment
     return appointments_profile
@@ -430,11 +434,15 @@ def create_referral(profile_id: int, referral: schemas.ReferralCreate, db: Sessi
     return crud.create_referral(db=db, referral=referral)
 
 # read referral by id
-@app.get("/referral/{referral_id}", response_model=list[schemas.Referral])
+@app.get("/referral/{referral_id}", response_model=schemas.Referral)
 def read_referral_by_id(referral_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     usr = verify_token(token)
 
     referral = crud.get_referral(db, referral_id)
+
+    if referral is None:
+        raise HTTPException(status_code=404, detail="Referral not found")
+    
     return referral
 
 ###################  relasiDokterRsPoli #############
