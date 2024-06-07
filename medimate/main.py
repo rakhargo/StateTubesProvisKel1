@@ -242,7 +242,7 @@ def read_profile_relation(relation_id: int, db: Session = Depends(get_db), token
 def read_all_doctor(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     usr = verify_token(token)
 
-    doctor = crud.get_all_doctor(db)
+    doctor = crud.get_all_doctors(db)
     return doctor
 
 # Get Doctor by ID
@@ -270,6 +270,21 @@ def read_doctor_image(doctor_id:int, db: Session = Depends(get_db),token: str = 
 
 ###################  doctor schedule
 
+# Create Doctor Schedule
+@app.post("/doctor_schedule/", response_model=schemas.DoctorSchedule)
+def create_doctor_schedule(doctor_schedule: schemas.DoctorScheduleCreate, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+    return crud.create_doctor_schedule(db=db, doctorSchedule=doctor_schedule)
+
+# Update Doctor Schedule
+@app.put("/doctor_schedule/{doctor_schedule_id}", response_model=schemas.DoctorSchedule)
+def update_doctor_schedule(doctor_schedule_id: int, doctor_schedule: schemas.DoctorScheduleUpdate, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+    db_doctor_schedule = crud.get_doctor_schedule_id(db, doctor_schedule_id)
+    if db_doctor_schedule is None:
+        raise HTTPException(status_code=404, detail="DoctorSchedule not found")
+    return crud.update_doctor_schedule(db=db, doctor_schedule_id=doctor_schedule_id, doctorSchedule=doctor_schedule)
+
 # Get all Doctor Schedules
 @app.get("/doctor_schedule/", response_model=list[schemas.DoctorSchedule])
 def read_all_doctor_schedules(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
@@ -285,7 +300,7 @@ def read_doctor_schedule(doctor_schedule_id: int, db: Session = Depends(get_db),
 
     doctor_schedule = crud.get_doctor_schedule_id(db, doctor_schedule_id)
     if doctor_schedule is None:
-        raise HTTPException(status_code=404, detail="DoctorSchedule not found")
+        raise HTTPException(status_code=404, detail="Doctor Schedule not found for doctor id :" + doctor_schedule_id)
     return doctor_schedule
 
 ###################  appointments

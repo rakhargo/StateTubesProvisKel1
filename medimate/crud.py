@@ -100,6 +100,24 @@ def get_all_doctors(db: Session):
 #######################################################################################################
 # Doctor Schedule
 
+# Create Doctor Schedule
+def create_doctor_schedule(db: Session, doctorSchedule: schemas.DoctorScheduleCreate):
+    db_doctorSchedule = models.DoctorSchedule(**doctorSchedule.model_dump())
+    db.add(db_doctorSchedule)
+    db.commit()
+    db.refresh(db_doctorSchedule)
+    return db_doctorSchedule
+
+# Update Doctor Schedule
+def update_doctor_schedule(db: Session, doctor_schedule_id: int, doctorSchedule: schemas.DoctorScheduleUpdate):
+    db_doctorSchedule = db.query(models.DoctorSchedule).filter(models.DoctorSchedule.id == doctor_schedule_id).first()
+    if db_doctorSchedule:
+        for key, value in doctorSchedule.model_dump(exclude_unset=True).items():
+            setattr(db_doctorSchedule, key, value)
+        db.commit()
+        db.refresh(db_doctorSchedule)
+    return db_doctorSchedule
+
 # Get Doctor Schedule by ID
 def get_doctor_schedule_id(db: Session, doctorSchedule_id: int):
     return db.query(models.DoctorSchedule).filter(models.DoctorSchedule.id == doctorSchedule_id).first()

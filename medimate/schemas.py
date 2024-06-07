@@ -15,7 +15,7 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class Token(BaseModel):
     access_token: str
@@ -45,7 +45,7 @@ class Profile(ProfileBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
     @field_validator("tanggalLahir")
     def parse_tanggal_lahir(cls, value):
@@ -73,7 +73,7 @@ class ProfileRelation(ProfileRelationBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ###############################
 # doctor
@@ -88,7 +88,7 @@ class Doctor(DoctorBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ###############################
 # appointment
@@ -113,7 +113,7 @@ class Appointment(AppointmentBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
     @field_validator("waktu")
     def parse_waktu(cls, value):
@@ -142,7 +142,7 @@ class DoctorSchedule(DoctorScheduleBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
     @field_validator("tanggal")
     def parse_tanggal(cls, value):
@@ -187,7 +187,7 @@ class HealthArticle(BaseModel):
     references: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ###############################
 # health facillity
@@ -206,7 +206,7 @@ class HealthFacility(BaseModel):
     logoFaskes: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ###############################
 # medical record
@@ -227,7 +227,7 @@ class MedicalRecord(MedicalRecordBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
     @field_validator("date")
     def parse_dateTime(cls, value):
@@ -247,7 +247,7 @@ class ReferralRead(BaseModel):
     alasan: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ###############################
 # relasiDokterRsPoli
@@ -266,7 +266,7 @@ class RelasiDokterRsPoli(RelasiDokterRsPoliBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ###############################
 # relasiJudulPoli
@@ -285,7 +285,7 @@ class RelasiJudulPoli(RelasiJudulPoliBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ###############################
 # relasiRsPoli
@@ -304,7 +304,7 @@ class RelasiRsPoli(RelasiRsPoliBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ###############################
 # Review
@@ -327,7 +327,7 @@ class Review(ReviewBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
     @field_validator("tanggal")
     def parse_tanggal(cls, value):
@@ -350,7 +350,7 @@ class Service(BaseModel):
     status: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 ###############################
 # specialist and polyclinic
@@ -361,4 +361,4 @@ class SpecialistAndPolyclinic(BaseModel):
     name: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
