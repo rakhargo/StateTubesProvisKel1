@@ -236,16 +236,23 @@ class MedicalRecord(MedicalRecordBase):
         return value
 
 ###############################
-# Refferal
+# Referral
 
-class ReferralRead(BaseModel):
-    id: int
+class ReferralBase(BaseModel):
     fromFacilityId: int
     toFacilityId: int
     patientId: int
     tanggal: date
     alasan: str
 
+class ReferralCreate(ReferralBase):
+    pass
+
+class ReferralDelete(ReferralBase):
+    pass
+
+class Referral(ReferralBase):
+    id: int
     class Config:
         from_attributes = True
 

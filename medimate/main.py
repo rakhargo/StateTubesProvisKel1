@@ -103,16 +103,15 @@ def authenticate(db,user: schemas.UserCreate):
 SECRET_KEY = "ilkom_upi_top"
 
 def create_access_token(username):
-    # info yang penting adalah berapa lama waktu expire
-    expiration_time = datetime.datetime.utcnow() + datetime.timedelta(hours=24)    # .now(datetime.UTC)
-    access_token = jwt.encode({"username":username,"exp":expiration_time},SECRET_KEY,algorithm="HS256")
-    return access_token    
+    # membuat token dengan waktu expire
+    expiration_time = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=24)
+    access_token = jwt.encode({"username": username, "exp": expiration_time}, SECRET_KEY, algorithm="HS256")
+    return access_token
 
 def verify_token(token: str):
     try:
         payload = jwt.decode(token,SECRET_KEY,algorithms=["HS256"])  # bukan algorithm,  algorithms (set)
         username = payload["username"]  
-
 
     # exception jika token invalid
     except jwt.ExpiredSignatureError:
@@ -181,9 +180,6 @@ def update_profile(profile_id: int, profile_update: schemas.ProfileUpdate, db: S
 def read_profile_user_id(user_id : int, db: Session = Depends(get_db), token : str = Depends(oauth2_scheme)):
     usr = verify_token(token)
     return crud.get_profile_by_user_id(db, user_id)
-    # usr =  verify_token(token)
-    # specialist_and_polyclinic = crud.get_all_specialist_and_polyclinics(db)
-    # return specialist_and_polyclinic
 
 # profile by profile id
 @app.get("/profile/{profile_id}", response_model=schemas.Profile)
@@ -253,7 +249,7 @@ def read_doctor(doctor_id: int, db: Session = Depends(get_db), token: str = Depe
     doctor = crud.get_doctor_id(db, doctor_id)
     return doctor
 
-# dooctor picture
+# doctor picture
 @app.get("/doctor_picture/{doctor_id}")
 def read_doctor_image(doctor_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     usr =  verify_token(token)
@@ -422,17 +418,24 @@ def read_health_facility_image(health_facility_id:int, db: Session = Depends(get
     
     return FileResponse(path_img+nama_image)
 
-###################  refferals ############# BELUM WOY
+###################  referral #############
 
-# create refferals
+# create referral
+@app.post("/referral/{profile_id}", response_model=schemas.Referral)
+def create_referral(profile_id: int, referral: schemas.ReferralCreate, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
 
-# read refferals by id
-@app.get("/refferal/{refferal_id}", response_model=list[schemas.ReferralRead])
-def read_refferal_by_id(refferal_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    if referral["profile_id"] != profile_id:
+        raise HTTPException(status_code=401, detail="Unauthorized access to create referral")
+
+    return crud.create_referral(db=db, referral=referral)
+
+# read referral by id
+@app.get("/referral/{referral_id}", response_model=list[schemas.ReferralRead])
+def read_referral_by_id(referral_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     usr = verify_token(token)
 
-    refferal = crud.get_refferal(db, refferal_id)
-    return refferal
+    referral = crud.get_referral(db, referral_id)
+    return referral
 
 ###################  relasiDokterRsPoli #############
 
@@ -496,24 +499,23 @@ def read_relasi_rs_poli(relasi_rs_poli_id: int, db: Session = Depends(get_db), t
 
 #######################################################################################################
 
-###################  review ############# BELUM WOY
+###################  review #############
 
 # create review
+@app.post("/review/", response_model=schemas.Review)
+def review(referral: schemas.Review, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
 
+    return crud.review(db=db, referral=referral)
 
 # read review by doctor id
 @app.get("/review_doctor/{doctor_id}", response_model=list[schemas.Review])
 def read_review_doctor(doctor_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    usr = verify_token(token)
-
     review_doc = crud.get_reviews_by_doctor_id(db, doctor_id)
     return review_doc
 
 # read review by facility id
 @app.get("/review_facility/{facility_id}", response_model=list[schemas.Review])
 def read_review_facility(facility_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    usr = verify_token(token)
-
     review_fac = crud.get_reviews_by_facility_id(db, facility_id)
     return review_fac
 

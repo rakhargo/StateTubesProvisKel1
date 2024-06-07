@@ -213,15 +213,19 @@ def update_medical_record(db: Session, record_id: int, record: schemas.MedicalRe
     return db_record
 
 #######################################################################################################
-# refferals
+# referral
 
-# Get Referral by ID
+# Create Referral
+def create_referral(db: Session, referral: schemas.ReferralCreate):
+    db_referral = models.Referral(**referral.model_dump())
+    db.add(db_referral)
+    db.commit()
+    db.refresh(db_referral)
+    return db_referral
+
+# Get referral by ID
 def get_referral(db: Session, referral_id: int):
     return db.query(models.Referral).filter(models.Referral.id == referral_id).first()
-
-# Get all Referrals
-def get_all_referrals(db: Session):
-    return db.query(models.Referral).all()
 
 #######################################################################################################
 # relasiDokterRsPoli
