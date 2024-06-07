@@ -425,8 +425,24 @@ def read_health_facility_image(health_facility_id:int, db: Session = Depends(get
     health_facility = crud.get_health_facility_by_id(db,health_facility_id)
     if not(health_facility):
         raise HTTPException(status_code=404, detail="id tidak valid")
-    path_img = '../img/health_facility_picture/'
+    path_img = '../img/healthFacility/foto/'
     nama_image = health_facility.fotoFaskes
+    # print(path_img+nama_image)
+    if not(path.exists(path_img + nama_image)):
+        raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
+    
+    return FileResponse(path_img+nama_image)
+
+# health facility logo
+@app.get("/health_facility_logo/{health_facility_id}")
+def read_health_facility_image(health_facility_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
+    usr =  verify_token(token)
+    health_facility = crud.get_health_facility_by_id(db,health_facility_id)
+    if not(health_facility):
+        raise HTTPException(status_code=404, detail="id tidak valid")
+    path_img = '../img/healthFacility/logo/'
+    nama_image = health_facility.logoFaskes
+    # print(path_img + nama_image)
     if not(path.exists(path_img + nama_image)):
         raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
     
