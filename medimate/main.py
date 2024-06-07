@@ -430,7 +430,7 @@ def create_referral(profile_id: int, referral: schemas.ReferralCreate, db: Sessi
     return crud.create_referral(db=db, referral=referral)
 
 # read referral by id
-@app.get("/referral/{referral_id}", response_model=list[schemas.ReferralRead])
+@app.get("/referral/{referral_id}", response_model=list[schemas.Referral])
 def read_referral_by_id(referral_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     usr = verify_token(token)
 
@@ -503,9 +503,9 @@ def read_relasi_rs_poli(relasi_rs_poli_id: int, db: Session = Depends(get_db), t
 
 # create review
 @app.post("/review/", response_model=schemas.Review)
-def review(referral: schemas.Review, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+def review(review: schemas.Review, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
 
-    return crud.review(db=db, referral=referral)
+    return crud.review(db=db, review=review)
 
 # read review by doctor id
 @app.get("/review_doctor/{doctor_id}", response_model=list[schemas.Review])
