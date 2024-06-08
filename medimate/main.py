@@ -241,7 +241,7 @@ def read_all_doctor(db: Session = Depends(get_db), token: str = Depends(oauth2_s
     return doctor
 
 # Get Doctor by ID
-@app.get("/doctor/{doctor_id}", response_model = schemas.Doctor)
+@app.get("/doctor_id/{doctor_id}", response_model = schemas.Doctor)
 def read_doctor(doctor_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     usr = verify_token(token)
 
