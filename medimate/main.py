@@ -159,9 +159,8 @@ async def token(req: Request, form_data: OAuth2PasswordRequestForm = Depends(),d
 # create profile
 @app.post("/create_profile/{user_id}")
 def create_profile(user_id: int, profile: schemas.ProfileCreate, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    usr = verify_token(token)
 
-    if usr["user_id"] != user_id:
+    if user_id != profile.userId:
         raise HTTPException(status_code=401, detail="Unauthorized access to create profile")
 
     return crud.create_profile(db=db, profile=profile)
