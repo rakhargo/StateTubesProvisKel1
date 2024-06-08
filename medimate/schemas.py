@@ -98,7 +98,7 @@ class AppointmentBase(BaseModel):
     doctorId: int
     facilityId: int
     status: str
-    waktu: Optional[int]
+    waktu: str
     metodePembayaran: str
     medicalRecordId: int
     antrian: int
