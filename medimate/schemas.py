@@ -102,6 +102,7 @@ class AppointmentBase(BaseModel):
     metodePembayaran: str
     medicalRecordId: int
     antrian: int
+    judul: str
 
 class AppointmentCreate(AppointmentBase):
     pass
@@ -115,11 +116,11 @@ class Appointment(AppointmentBase):
     class Config:
         from_attributes = True
 
-    @field_validator("waktu")
-    def parse_waktu(cls, value):
-        if isinstance(value, str):
-            return int(value)
-        return value
+    # @field_validator("waktu")
+    # def parse_waktu(cls, value):
+    #     if isinstance(value, str):
+    #         return int(value)
+    #     return value
 
 ###############################
 # Doctor Schedule

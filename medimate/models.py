@@ -67,10 +67,11 @@ class Appointment(BaseDB):
     doctorId = Column(Integer, ForeignKey('doctor.id'), nullable=False)
     facilityId = Column(Integer, ForeignKey('healthFacility.id'), nullable=False)
     status = Column(String, nullable=False)
-    waktu = Column(Integer, nullable=False)
+    waktu = Column(String, nullable=False)
     metodePembayaran = Column(String, nullable=False)
     medicalRecordId = Column(Integer, nullable=False)
     antrian = Column(Integer, nullable=False)
+    judul = Column(String, nullable=False)
 
     doctor = relationship('Doctor')
     facility = relationship('HealthFacility')
