@@ -135,6 +135,7 @@ class RelasiJudulPoli(BaseDB):
     __tablename__ = "relasiJudulPoli"
     id = Column(Integer, primary_key=True)
     judul = Column(String, nullable=False)
+    tindakan = Column(String, nullable=False)
     polyclinicId = Column(Integer, ForeignKey("SpecialistAndPolyclinic.id"), nullable=False)
 
 class RelasiRsPoli(BaseDB):

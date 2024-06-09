@@ -281,6 +281,7 @@ class RelasiDokterRsPoli(RelasiDokterRsPoliBase):
 
 class RelasiJudulPoliBase(BaseModel):
     judul: str
+    tindakan: str
     polyclinicId: int
 
 class RelasiJudulPoliCreate(RelasiJudulPoliBase):

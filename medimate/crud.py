@@ -56,7 +56,6 @@ def get_profile(db: Session, profile_id: int):
 
 # Get Profile by User ID
 def get_profile_by_user_id(db: Session, user_id: int):
-    # return db.query(models.Profile).filter(models.Profile.userId == user_id).first()
     return db.query(models.Profile).filter(models.Profile.userId == user_id)
 
 # Update Profile
