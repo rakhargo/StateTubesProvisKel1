@@ -17,12 +17,12 @@ from pydantic import BaseModel
 
 from sqlalchemy.orm import Session
 
-import crud, models, schemas
+import crud, models, schemas, shutil, datetime
 from database import SessionLocal, engine
 models.BaseDB.metadata.create_all(bind=engine)
+from pathlib import Path
 
 from jose import jwt
-import datetime
 
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, File, UploadFile
@@ -198,6 +198,25 @@ def read_profile_picture(profile_id:int, db: Session = Depends(get_db),token: st
         raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
     
     return FileResponse(path_img+nama_image)
+
+@app.post("/upload_profile_picture/")
+async def upload_profile_picture(profile_id: int, file: UploadFile = File(...), db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+    profile = crud.get_profile(db, profile_id)
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    path_img = '../img/profile_picture/'
+    Path(path_img).mkdir(parents=True, exist_ok=True)
+    file_path = Path(path_img) / file.filename
+
+    with file_path.open("wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    profile.userPhoto = file.filename
+    db.commit()
+
+    return {"filename": file.filename}
 
 # delete profile by profile id
 @app.delete("/delete_profile/{profile_id}")
