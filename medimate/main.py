@@ -689,4 +689,16 @@ def read_medical_record_appointment(appointment_id : int, db: Session = Depends(
         raise HTTPException(status_code=404, detail=f"no medical record found with appointment_id = {appointment_id}")
     return crud.get_medical_records_by_appointment_id(db, appointment_id)
 
+#create medical record
+@app.post("/create_medical_record/")
+def create_medical_record(medical_record: schemas.MedicalRecordCreate, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    
+    ## pake ini buat verify session nya
+    # usr = verify_token(token)
+
+    # if usr["profile_id"] != profile_id:
+    #     raise HTTPException(status_code=401, detail="Unauthorized access to create profile")
+
+    return crud.create_medical_record(db, medical_record)
+    
 ####################################################################################################

@@ -209,6 +209,14 @@ def get_medical_records_by_appointment_id(db: Session, appointment_id: int):
 def get_medical_record(db: Session, record_id: int):
     return db.query(models.MedicalRecord).filter(models.MedicalRecord.id == record_id).first()
 
+# Create Medical Record
+def create_medical_record(db: Session, medical_record: schemas.MedicalRecordCreate):
+    db_medical_record = models.MedicalRecord(**medical_record.model_dump())
+    db.add(db_medical_record)
+    db.commit()
+    db.refresh(db_medical_record)
+    return db_medical_record
+
 # Update Medical Record
 def update_medical_record(db: Session, record_id: int, record: schemas.MedicalRecordUpdate):
     db_record = db.query(models.MedicalRecord).filter(models.MedicalRecord.id == record_id).first()
