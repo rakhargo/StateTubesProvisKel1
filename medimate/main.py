@@ -199,19 +199,6 @@ def read_profile_picture(profile_id:int, db: Session = Depends(get_db),token: st
     
     return FileResponse(path_img+nama_image)
 
-@app.get("/profile_picture_user_id/{user_id}")
-def read_profile_picture(user_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
-    usr =  verify_token(token)
-    profile = crud.get_profile_by_user_id(db,user_id)
-    if not(profile):
-        raise HTTPException(status_code=404, detail="id tidak valid")
-    path_img = '../img/profile_picture/'
-    nama_image = profile.userPhoto
-    if not(path.exists(path_img + nama_image)):
-        raise HTTPException(status_code=404, detail="File dengan nama tersebut tidak ditemukan")
-    
-    return FileResponse(path_img+nama_image)
-
 # delete profile by profile id
 @app.delete("/delete_profile/{profile_id}")
 def delete_profile(profile_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
