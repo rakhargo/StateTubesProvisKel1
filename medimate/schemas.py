@@ -102,6 +102,7 @@ class AppointmentBase(BaseModel):
     metodePembayaran: str
     medicalRecordId: int
     antrian: int
+    judul : int
 
 class AppointmentCreate(AppointmentBase):
     pass

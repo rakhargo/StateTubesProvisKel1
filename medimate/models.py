@@ -71,6 +71,7 @@ class Appointment(BaseDB):
     metodePembayaran = Column(String, nullable=False)
     medicalRecordId = Column(Integer, nullable=False)
     antrian = Column(Integer, nullable=False)
+    judul = Column(Integer, nullable=False)
 
     doctor = relationship('Doctor')
     facility = relationship('HealthFacility')
