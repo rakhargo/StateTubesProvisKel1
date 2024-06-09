@@ -201,6 +201,10 @@ def get_all_health_facilities(db: Session):
 def get_medical_records_by_profile_id(db: Session, profile_id: int):
     return db.query(models.MedicalRecord).filter(models.MedicalRecord.patientId == profile_id).all()
 
+# Get Medical Records by appointment ID
+def get_medical_records_by_appointment_id(db: Session, appointment_id: int):
+    return db.query(models.MedicalRecord).filter(models.MedicalRecord.appointmentId == appointment_id).first()
+
 # Get Medical Record by ID
 def get_medical_record(db: Session, record_id: int):
     return db.query(models.MedicalRecord).filter(models.MedicalRecord.id == record_id).first()

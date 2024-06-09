@@ -69,7 +69,6 @@ class Appointment(BaseDB):
     status = Column(String, nullable=False)
     waktu = Column(Integer, nullable=False)
     metodePembayaran = Column(String, nullable=False)
-    medicalRecordId = Column(Integer, nullable=False)
     antrian = Column(Integer, nullable=False)
     judul = Column(Integer, nullable=False)
 
@@ -107,6 +106,7 @@ class MedicalRecord(BaseDB):
     date = Column(Date)
     jenisTes = Column(String, nullable=False)
     hasilTes = Column(String, nullable=False)
+    appointmentId = Column(Integer, ForeignKey('appointment.id'), nullable=False)
 
     @hybrid_property
     def formatted_date(self):

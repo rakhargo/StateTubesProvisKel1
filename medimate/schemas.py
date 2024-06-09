@@ -100,7 +100,6 @@ class AppointmentBase(BaseModel):
     status: str
     waktu: str
     metodePembayaran: str
-    medicalRecordId: int
     antrian: int
     judul: str
 
@@ -217,6 +216,7 @@ class MedicalRecordBase(BaseModel):
     date: Optional[date]
     jenisTes: str
     hasilTes: str
+    appointmentId: int
 
 class MedicalRecordCreate(MedicalRecordBase):
     pass
