@@ -681,12 +681,12 @@ def read_spe_image(specialist_and_polyclinic_id:int, db: Session = Depends(get_d
 ###################  medical record
 
 # medical record by appointment id
-@app.get("/medical_record/{medical_record_id}", response_model=schemas.MedicalRecord)
-def read_medical_record_appointment(medical_record_id : int, db: Session = Depends(get_db), token : str = Depends(oauth2_scheme)):
+@app.get("/medical_record/{appointment_id}", response_model=schemas.MedicalRecord)
+def read_medical_record_appointment(appointment_id : int, db: Session = Depends(get_db), token : str = Depends(oauth2_scheme)):
     usr = verify_token(token)
-    medical_record = crud.get_medical_records_by_appointment_id(db, medical_record_id)
+    medical_record = crud.get_medical_records_by_appointment_id(db, appointment_id)
     if medical_record is None:
-        raise HTTPException(status_code=404, detail=f"no medical record found with id = {medical_record_id}")
-    return crud.get_medical_records_by_appointment_id(db, medical_record_id)
+        raise HTTPException(status_code=404, detail=f"no medical record found with appointment_id = {appointment_id}")
+    return crud.get_medical_records_by_appointment_id(db, appointment_id)
 
 ####################################################################################################
