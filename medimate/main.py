@@ -276,6 +276,16 @@ def read_doctor(doctor_id: int, db: Session = Depends(get_db), token: str = Depe
     doctor = crud.get_doctor_id(db, doctor_id)
     return doctor
 
+# Get all doctor by poly id
+@app.get("/doctor_poly_id/{poly_id}", response_model=list[schemas.Doctor])
+def read_all_doctor__poly_id(poly_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    doctor = crud.get_doctor_poly_id(db, poly_id)
+    if not doctor:
+        raise HTTPException(status_code=404, detail=f"Doctor not found for poly_id = {poly_id}")
+    return doctor
+
 # doctor picture
 @app.get("/doctor_picture/{doctor_id}")
 def read_doctor_image(doctor_id:int, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):

@@ -80,9 +80,9 @@ class ProfileRelation(ProfileRelationBase):
 
 class DoctorBase(BaseModel):
     nama: str
-    spesialisasi: str
     pengalaman: int
     foto: str
+    polyId: int
 
 class Doctor(DoctorBase):
     id: int

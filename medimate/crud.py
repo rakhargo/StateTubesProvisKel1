@@ -92,6 +92,10 @@ def get_all_profile_relations(db: Session):
 def get_doctor_id(db: Session, doctor_id: int):
     return db.query(models.Doctor).filter(models.Doctor.id == doctor_id).first()
 
+# Get Doctor by poly ID
+def get_doctor_poly_id(db: Session, poly_id: int):
+    return db.query(models.Doctor).filter(models.Doctor.polyId == poly_id).all()
+
 # Get all doctors
 def get_all_doctors(db: Session):
     return db.query(models.Doctor).all()

@@ -38,9 +38,9 @@ class Doctor(BaseDB):
     __tablename__ = "doctor"
     id = Column(Integer, primary_key=True)
     nama = Column(String, unique=True, index=True)
-    spesialisasi = Column(String, nullable=False)
     pengalaman = Column(Integer, nullable=False)
     foto = Column(String)
+    polyId = Column(Integer, ForeignKey('SpecialistAndPolyclinic.id') , nullable=False)
 
 class DoctorSchedule(BaseDB):
     __tablename__ = "doctorSchedule"
