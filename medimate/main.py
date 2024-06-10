@@ -11,7 +11,7 @@
 from os import path
 from fastapi import Depends, Request, FastAPI, HTTPException
 
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm,OAuth2PasswordBearer
 from pydantic import BaseModel
 
@@ -155,6 +155,8 @@ async def token(req: Request, form_data: OAuth2PasswordRequestForm = Depends(),d
 
 ###################  profile
 
+UPLOAD_DIRECTORY = "./../img"
+
 # create profile
 @app.post("/create_profile/{user_id}")
 def create_profile(user_id: int, profile: schemas.ProfileCreate, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
@@ -172,6 +174,14 @@ def update_profile(profile_id: int, profile_update: schemas.ProfileUpdate, db: S
     if updated_profile is None:
         raise HTTPException(status_code=404, detail="Profile not found")
     return updated_profile
+
+# upload image
+@app.post("/upload_profile_image")
+async def upload_image(file: UploadFile = File(...)):
+    file_location = f"{UPLOAD_DIRECTORY}/profile_picture/{file.filename}"
+    with open(file_location, "wb+") as file_object:
+        file_object.write(file.file.read())
+    return JSONResponse(content={"image_name": file.filename})
 
 # profile by user id
 @app.get("/profile_user_id/{user_id}", response_model=list[schemas.Profile])
