@@ -70,7 +70,7 @@ class Appointment(BaseDB):
     waktu = Column(Integer, nullable=False)
     metodePembayaran = Column(String, nullable=False)
     antrian = Column(Integer, nullable=False)
-    judul = Column(Integer, nullable=False)
+    relasiJudulPoliId = Column(Integer, ForeignKey('relasiJudulPoli.id'), nullable=False)
 
     doctor = relationship('Doctor')
     facility = relationship('HealthFacility')
@@ -104,9 +104,8 @@ class MedicalRecord(BaseDB):
     id = Column(Integer, primary_key=True)
     patientId = Column(Integer, ForeignKey('profile.id'), nullable=False)
     date = Column(Date)
-    jenisTes = Column(String, nullable=False)
-    hasilTes = Column(String, nullable=False)
     appointmentId = Column(Integer, ForeignKey('appointment.id'), nullable=False)
+    relasiJudulPoliId = Column(Integer, ForeignKey('relasiJudulPoli.id'), nullable=False)
 
     @hybrid_property
     def formatted_date(self):

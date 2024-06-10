@@ -101,7 +101,7 @@ class AppointmentBase(BaseModel):
     waktu: str
     metodePembayaran: str
     antrian: int
-    judul: str
+    relasiJudulPoliId: int
 
 class AppointmentCreate(AppointmentBase):
     pass
@@ -214,9 +214,8 @@ class HealthFacility(BaseModel):
 class MedicalRecordBase(BaseModel):
     patientId: int
     date: Optional[date]
-    jenisTes: str
-    hasilTes: str
     appointmentId: int
+    relasiJudulPoliId : int
 
 class MedicalRecordCreate(MedicalRecordBase):
     pass
