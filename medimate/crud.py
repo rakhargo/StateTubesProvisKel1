@@ -253,6 +253,10 @@ def get_referral(db: Session, referral_id: int):
 def get_relasi_dokter_rs_poli(db: Session, relasi_dokter_rs_poli_id: int):
     return db.query(models.RelasiDokterRsPoli).filter(models.RelasiDokterRsPoli.id == relasi_dokter_rs_poli_id).first()
 
+# Get RelasiDokterRsPoli by ID
+def get_relasi_dokter_rs_poli_id_id(db: Session, relasi_dokter_rs_poli_id: int, doctor_id:int):
+    return db.query(models.RelasiDokterRsPoli).filter(models.RelasiDokterRsPoli.relasiRsPoliId == relasi_dokter_rs_poli_id, models.RelasiDokterRsPoli.doctorId == doctor_id).first()
+
 # Get RelasiDokterRsPoli by doctorID
 def get_relasi_dokter_rs_poli_doctor_id(db: Session, doctor_id: int):
     return db.query(models.RelasiDokterRsPoli).filter(models.RelasiDokterRsPoli.doctorId == doctor_id).all()

@@ -538,6 +538,16 @@ def read_all_relasi_dokter_rs_poli(relasirspoli_id: int, db: Session = Depends(g
         raise HTTPException(status_code=404, detail= f"RelasiDokterRsPoli not found with relasirspoli_id = {relasirspoli_id}")
     return relasi_dokter_rs_poli
 
+# Get RelasiDokterRsPoli by relasirspoli id
+@app.get("/relasi_dokter_rs_poli_id_id/{relasirspoli_id}/{doctor_id}", response_model=schemas.RelasiDokterRsPoli)
+def relasi_dokter_rs_poli_id_id(relasirspoli_id: int, doctor_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    usr = verify_token(token)
+
+    relasi_dokter_rs_poli = crud.get_relasi_dokter_rs_poli_id_id(db, relasirspoli_id, doctor_id)
+    if relasi_dokter_rs_poli is None:
+        raise HTTPException(status_code=404, detail= f"RelasiDokterRsPoli not found with relasirspoli_id = {relasirspoli_id} and doctor_id = {doctor_id}")
+    return relasi_dokter_rs_poli
+
 # Get RelasiDokterRsPoli by ID
 @app.get("/relasi_dokter_rs_poli/{relasi_dokter_rs_poli_id}", response_model=schemas.RelasiDokterRsPoli)
 def read_relasi_dokter_rs_poli(relasi_dokter_rs_poli_id: int, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
