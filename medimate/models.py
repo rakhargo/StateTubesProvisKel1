@@ -129,6 +129,7 @@ class RelasiDokterRsPoli(BaseDB):
     id = Column(Integer, primary_key=True)
     doctorId = Column(Integer, ForeignKey("doctor.id"), nullable=False)
     relasiRsPoliId = Column(Integer, ForeignKey("relasiRsPoli.id"), nullable=False)
+    harga = Column(Integer, nullable=False)
 
 class RelasiJudulPoli(BaseDB):
     __tablename__ = "relasiJudulPoli"

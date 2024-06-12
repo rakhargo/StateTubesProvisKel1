@@ -262,6 +262,7 @@ class Referral(ReferralBase):
 class RelasiDokterRsPoliBase(BaseModel):
     doctorId: int
     relasiRsPoliId: int
+    harga: int
 
 class RelasiDokterRsPoliCreate(RelasiDokterRsPoliBase):
     pass
